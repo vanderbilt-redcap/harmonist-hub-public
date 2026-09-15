@@ -1,0 +1,92 @@
+<div class="card">
+    <div class="card-header">
+        <h6 class="card-title d-flex justify-content-between align-items-center">
+            <span class="col-6 p-0">Hub Metrics</span>
+            <span class="col-6 text-end p-0">
+                <a href="{{ getUrl('index.php') ~ '&NOAUTH' ~ '&option=mts' }}">View more</a>
+            </span>
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="d-flex">
+            <div class="flex-grow-1 pe-3">
+                <div style="font-weight: bold; padding-bottom: 20px;">Requests</div>
+                {% set has_data = false %}
+                {% for val in requests_values %}
+                    {% if val > 0 %}
+                        {% set has_data = true %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if has_data %}
+                    All {{ settings.hub_name }} Hub requests by category.
+                {% else %}
+                    No data available.
+                {% endif %}
+            </div>
+            <div>
+                <canvas id="IedeaChart" class="canvas_statistics" width="100px" height="100px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        Sortable.init();
+        $('html,body').scrollTop(0);
+        $("html,body").animate({ scrollTop: 0 }, "slow");
+
+        var requests_values = {{ requests_values|json_encode|raw }};
+        var requests_labels = {{ requests_labels|json_encode|raw }};
+        var requests_colors = {{ requests_colors|json_encode|raw }};
+
+        // Check if array is empty OR all values are 0
+        var allZero = requests_values.length === 0 || requests_values.every(function(v) { return v === 0; });
+
+        if (allZero) {
+            requests_values = [1];
+            requests_labels = ["No data"];
+            requests_colors = ["#d3d3d3"];
+        }
+
+        var  ctx_iedea = $("#IedeaChart");
+        var config_iedea = {
+            type: 'doughnut',
+            data: {
+                labels: requests_labels,
+                datasets: [{
+                    labels: requests_labels,
+                    backgroundColor: requests_colors,
+                    data: requests_values
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    datalabels: {
+                        color: '#fff', // Set label color to white
+                        formatter: function(value, context) {
+                            if (context.dataset.labels[0] === "No data") return '';
+                            return value; // Format the label to display the value
+                        },
+                        font: {
+                            size: 10 // Set font size
+                        },
+                        anchor: 'center', // Positioning: Center anchor
+                        align: 'center', // Positioning: Center alignment
+                    },
+                    legend: {
+                        display: false // This hides the legend
+                    }
+                }
+            },
+            plugins: [ChartDataLabels] // Register the datalabels plugin
+        }
+
+        // Create the chart
+        var iedea_chart = new Chart(ctx_iedea, config_iedea);
+    });
+</script>
+{% endblock %}

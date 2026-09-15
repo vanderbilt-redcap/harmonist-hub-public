@@ -1,0 +1,86 @@
+<div>
+    <div class="text-dark" style="font-size: 20px;">
+        <h3>Access {{ hub_project_name }}</h3>
+    </div>
+    <div class="text-dark">
+        {{ hub_login_text|raw }}
+    </div>
+
+    <div class="col-md-10">
+        <!-- Blue Alert -->
+        <div class="alert alert-info d-none mt-2" id="blue-alert">
+            {{ hub_login_blue_text|raw }}
+        </div>
+
+        <!-- Error Message -->
+        {% if error_message is not empty %}
+            {% include "_alert_messages.html.twig" with {
+                message_type: "danger",
+                message_id: "hub_error_message",
+                message_class: error_message is not empty ? '' : 'd-none',
+                message_text: error_message|raw
+            } %}
+        {% endif %}
+
+        <p></p>
+
+        <!-- Request Access Link -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title"><strong>Request Access Link</strong></h6>
+            </div>
+            <div class="card-body">
+                <form id="form_login">
+                    <div class="mb-3">
+                        <label for="hub_email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="hub_email" name="hub_email" placeholder="Type your email address." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary fw-bold btn-sm">Get Link</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#form_login').submit(function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const url_get_link = {{ url_get_link|json_encode|raw }};
+            const errorMessages = [];
+            const emailInput = $('#hub_email').val().trim();
+
+            $('#hub_error_message').hide().empty();
+
+            // Validate email format
+            if (!validateEmail(emailInput)) {
+                errorMessages.push('<strong>Email address not valid.</strong><br>Please enter a valid email address.');
+            }
+
+            if (errorMessages.length > 0) {
+                // Display error messages
+                $.each(errorMessages, function (index, message) {
+                    $('#hub_error_message').append('<div>' + message + '</div>');
+                });
+                $('#hub_error_message').removeClass('d-none').show();
+                $('html, body').scrollTop(0); // Scroll to top for visibility
+            } else {
+                // Prepare data for AJAX request
+                const option = {{ option|json_encode|raw }};
+                const record = {{ record|json_encode|raw }};
+                const redcap_csrf_token = {{ redcap_csrf_token|json_encode|raw }};
+                loadAjax(
+                    '&email=' + encodeURIComponent(emailInput) + '&option=' + encodeURIComponent(option) + '&record=' + encodeURIComponent(record) + '&redcap_csrf_token=' + redcap_csrf_token,
+                    url_get_link,
+                    'hub_error_message'
+                );
+
+                // Reset email input field after submission
+                $('#hub_email').val('');
+            }
+
+            $('#blue-alert').removeClass('d-none').show();
+        });
+    });
+</script>

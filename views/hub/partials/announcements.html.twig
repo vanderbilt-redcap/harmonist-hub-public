@@ -1,0 +1,36 @@
+<div class="alert alert-info">
+    <div>
+        {% if total_announcements > 0 %}
+            <ul class="fa-ul" style="position: relative;">
+                {% for i in 1..number_of_announcements %}
+                    {% if homepage['announce_text' ~ i] %}
+                        <li style="padding-right: 40px;">
+                            <i class="fa-li fa fa-bell-o"></i>
+                            {{ homepage['announce_text' ~ i]|raw }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if is_admin %}
+                    <!-- Display the cog only once -->
+                    <a href="#" onclick="javascript:$('#announcements_survey').modal('show');" style="position: absolute; top: 0px; right: 10px; cursor: pointer;">
+                        <span class="fa fa-cog"></span>
+                    </a>
+                {% endif %}
+            </ul>
+        {% else %}
+            <ul class="fa-ul" style="position: relative;">
+                <li style="padding-right: 40px;">
+                    <i class="fa-li fa fa-bell-o"></i>No Announcements.
+                    {% if is_admin %}
+                        <a href="#" onclick="javascript:$('#announcements_survey').modal('show');" style="cursor: pointer; font-weight: bold">Create NEW.</a>
+                        <!-- Display the cog only once -->
+                        <a href="#" onclick="javascript:$('#announcements_survey').modal('show');" style="position: absolute; top: 0px; right: 10px; cursor: pointer;">
+                            <span class="fa fa-cog"></span>
+                        </a>
+                    {% endif %}
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="footer text-center mt-5">
+    <div>
+        Powered by
+        <a href="{{ index_url ~ '&NOAUTH&option=log' }}">
+            Harmonist Hub {{ versions_by_prefix['harmonist-hub-public']|escape }}
+        </a>
+    </div>
+    <div>
+        <a href="{{ index_url ~ '&NOAUTH&option=abt' }}">
+            About {{ about_title|escape }}
+        </a> |
+        <a href="mailto:{{ settings['hub_contact_email']|escape }}">
+            Contact us
+        </a> |
+        <a href="{{ index_url ~ '&NOAUTH&option=bug' }}">
+            Report a bug
+        </a>
+    </div>
+</div>

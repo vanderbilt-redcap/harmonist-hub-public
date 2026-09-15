@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'html_head.html.twig' %}
+<body>
+{% if routes.isHeaderRequired(option) %}
+    {% include 'nav.html.twig' %}
+{% endif %}
+
+<div class="container" style="margin: 0 auto; float: none; min-height: 900px;">
+    {% if has_valid_token %}
+        {% if route is not empty %}
+            {% include route %}
+        {% else %}
+            {% if success_message is not empty %}
+                    {% include 'hub/home_success_message.html.twig' %}
+            {% endif %}
+            {% include 'hub/home.html.twig' %}
+        {% endif %}
+        {# Loop through surveyLinks and include the corresponding twig templates #}
+        {% if survey_links is not empty %}
+            {% for template, survey_link in survey_links %}
+                {% include template with {'survey_link': survey_link} %}
+            {% endfor %}
+        {% endif %}
+    {% elseif not is_authorized_and_has_rights %}
+        {% include 'hub/login.html.twig' %}
+    {% elseif template_to_render == 'hub/login.html.twig' and error_message is not empty %}
+        {% include 'hub/login.html.twig' %}
+    {% else %}
+        {% include template_to_render %}
+    {% endif %}
+</div>
+
+{% include 'footer.html.twig' %}
+</body>
+</html>

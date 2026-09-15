@@ -1,3 +1,8 @@
+<div style="padding:12px 16px;border-left:4px solid #d29922;background:#fff8e1;">
+  <strong>⚠️ This is the Harmonist Hub Public version for portability testing and not for final release.</strong><br>
+  Before installing, please review the <a href="docs/iedea-harmonist-build-and-deploy-steps.docx.md">IeDEA-Harmonist Build &amp; Deploy Steps</a>.
+</div>
+
 # IeDEA-Harmonist Technical Installation
 
 Before installing the Harmonist Hub External Module, please ensure that you have the following modules downloaded as well:

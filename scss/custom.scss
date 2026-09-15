@@ -1,0 +1,33 @@
+// Example: Customize theme colors globally for badges
+$theme-colors: (
+        "primary": #4d94ff,
+        "secondary": #6c757d,
+        "success": #5cb85c,
+        "danger": #e74c3c,
+        "warning": #ffc107,
+        "info": #d9edf7,
+        "light": #f8f9fa,
+        "dark": #212529
+);
+
+$success: #5cb85c;
+$danger: #e74c3c;
+$primary: #4d94ff;
+$info: #d9edf7;
+
+$text-success: #5cb85c;
+$text-danger: #4d94ff;
+
+// This variable defines the range on when the text color goes white or black
+$min-contrast-ratio: 1.5;
+
+$btn-link-color: #337ab7;
+
+$card-title-spacer-y: 0;
+
+$navbar-light-color: #777;
+$navbar-padding-y: 0;
+
+
+
+@import "../node_modules/bootstrap/scss/bootstrap";

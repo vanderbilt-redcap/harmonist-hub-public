@@ -1,0 +1,114 @@
+{% extends "_modal.html.twig" %}
+
+{% set modal_id = "modal-log-out" %}
+{% set modal_label_id = "modalLogOutLabel" %}
+{% set modal_title = "Session Timeout" %}
+
+{% block modal_body %}
+    <span>You are being timed out due to inactivity.</span>
+    <br>
+    <span style="color:red;">Please choose to stay signed in otherwise you will be logged out automatically.</span>
+{% endblock %}
+
+{% block modal_footer %}
+    <a href="#" onclick="destroySession('{{ logoutUrl }}');" class="btn btn-secondary" data-bs-dismiss="modal">Log Out</a>
+    <a class="btn btn-success" id="btnStayLoggedIn">Stay Signed In (<span id="countdownLogOut">{{ countdown }}</span>)</a>
+{% endblock %}
+
+{% block script %}
+<script>
+    // Pass PHP variables to JavaScript in a cleaner way
+    const countdown = {{ countdown|json_encode|raw }};
+    const sessionTimeout = {{ timer|json_encode|raw }};
+    const logoutUrl = {{ logout_url|json_encode|raw }};
+
+    // Global state variables
+    let lastActiveTime = new Date();
+    let idleCheckInterval = null;
+    let countdownTimer = null;
+    let timeLeftCounter = countdown;
+
+    // Utility to reset activity time
+    function resetLastActiveTime() {
+        lastActiveTime = new Date();
+    }
+
+    // Initialize event listeners for user activity
+    function initializeActivityListeners() {
+        const activityEvents = ["click", "mousemove", "keypress", "scroll"];
+        activityEvents.forEach(event => {
+            window.addEventListener(event, resetLastActiveTime);
+        });
+    }
+
+    // Check for user inactivity
+    function checkIdleTime() {
+        const currentTime = new Date().getTime();
+        const elapsedTime = Math.floor((currentTime - lastActiveTime.getTime()) / 1000);
+
+        if (elapsedTime >= sessionTimeout && !isModalVisible()) {
+            showLogoutModal();
+        }
+    }
+
+    // Check if the modal is currently visible
+    function isModalVisible() {
+        return document.getElementById("modal-log-out").classList.contains("show");
+    }
+
+    // Show the logout modal and start the countdown
+    function showLogoutModal() {
+        const modal = new bootstrap.Modal(document.getElementById("modal-log-out"));
+        modal.show();
+
+        timeLeftCounter = countdown;
+        updateCountdownDisplay();
+
+        countdownTimer = setInterval(() => {
+            if (timeLeftCounter <= 0) {
+                clearInterval(countdownTimer);
+                modal.hide();
+                destroySession(logoutUrl);
+            } else {
+                updateCountdownDisplay();
+                timeLeftCounter -= 1;
+            }
+        }, 1000);
+
+        // Reset timer if the user stays signed in
+        document.getElementById("btnStayLoggedIn").addEventListener("click", () => {
+            resetSessionTimeout(modal);
+        });
+
+        modal._element.addEventListener("hidden.bs.modal", () => {
+            resetSessionTimeout(modal);
+        });
+    }
+
+    // Update the countdown display in the modal
+    function updateCountdownDisplay() {
+        document.getElementById("countdownLogOut").textContent = timeLeftCounter;
+    }
+
+    // Reset session timeout and close the modal
+    function resetSessionTimeout(modal) {
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+        }
+        modal.hide();
+        resetLastActiveTime();
+        timeLeftCounter = countdown;
+    }
+
+    // Destroy the session (logout)
+    function destroySession(url) {
+        window.location.href = url;
+    }
+
+    // Initialize the script
+    document.addEventListener("DOMContentLoaded", () => {
+        initializeActivityListeners();
+        idleCheckInterval = setInterval(checkIdleTime, 10000); // Check every 10 seconds
+    });
+</script>
+{% endblock %}

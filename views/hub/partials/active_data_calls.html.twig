@@ -1,0 +1,20 @@
+<div class="card">
+    <div class="card-header" style="background-color: #5cb85c; color: #fff;">
+        <h6 class="card-title">
+            Active Data Calls
+            <span class="badge text-bg-light" style="color: #333; float: right;">
+                {{ number_of_open_data_calls }}
+            </span>
+        </h6>
+    </div>
+    <div class="card-body">
+        <div style="padding-bottom: 10px; text-align: left;">
+            {{ settings['hub_active_shortcut']|raw }}
+        </div>
+        <div style="text-align: center;">
+            <a href="{{ getUrl('index.php') ~ '&NOAUTH&option=upd' }}" class="btn btn-light btn-white" style="border: 1px solid #ccc; color: #333;">
+                View Data Calls
+            </a>
+        </div>
+    </div>
+</div>

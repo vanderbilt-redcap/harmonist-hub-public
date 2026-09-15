@@ -1,0 +1,164 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+request_id,request,,text,"Request ID",,,,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+request_type,request,"Request Submission Form",dropdown,"What are you submitting for review?","1, Concept Sheet | 5, Fast Track Concept | 2, Abstract | 3, Manuscript | 4, Poster | 99, Other",,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+version_txt,request,,descriptive,"<div class=""blue"">Check that you are using the <b>most recent version of the Concept Sheet template</b> (see attachment).",,,,,,,"[request_type] = '1'",,,,,,
+request_conf,request,,text,"What conference are you submitting to? <div style=""font-weight:lighter;font-style:italic"">(if applicable, e.g., TB Union, IAS, CROI,  AMIA)</div>",,,,,,,"[request_type] = '2' or [request_type] = '4' or [request_type] = '99'",,LV,,,,
+concept_category,request,,radio,"Is this a new concept proposal or is it an extension of a previously approved concept?","1, New concept | 2, Extension of previous concept",,,,,,"[request_type] = '1'",,LV,,,,
+assoc_concept,request,,sql,"Associated concept","SELECT a.record, CONCAT(a.value, ' | ', b.value) FROM (SELECT record, value FROM redcap_data WHERE project_id = 2122 AND field_name = 'concept_id') a JOIN (SELECT record, value FROM redcap_data where project_id = 2122 and field_name = 'concept_title') b ON b.record=a.record ORDER BY a.value DESC, b.value ",,autocomplete,,,,"[concept_category] <> '1'",,LV,,,,
+wg_y,request,"Working Group",yesno,"Is there a Working Group associated with this concept?",,,,,,,,,LV,,,,
+wg_name,request,,sql,"Which Working Group?","select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = 2129 and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = 2129 and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = 2129 and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = 2129 group by record.value ORDER BY record.value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg2_name,request,,sql,"Secondary Working Group (if applicable)","select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = 2129 and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = 2129 and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = 2129 and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = 2129 group by record.value ORDER BY record.value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg3_name,request,,sql,"Third Working Group (if applicable)","select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = 2129 and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = 2129 and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = 2129 and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = 2129 group by record.value ORDER BY record.value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg4_name,request,,sql,"Fourth Working Group (if applicable)","select record.record as record, CONCAT( max(if(group_name.field_name = 'group_name',group_name.value, '')), ' (', max(if(group_abbr.field_name = 'group_abbr', group_abbr.value, '')), ') ' ) as value from redcap_data record left join redcap_data active_y on active_y.project_id = 2129 and active_y.record = record.value and active_y.field_name = 'active_y' and active_y.value ='Y' left join redcap_data group_abbr on group_abbr.project_id = 2129 and group_abbr.record = record.value and group_abbr.field_name = 'group_abbr' left join redcap_data group_name on group_name.project_id = 2129 and group_name.record = record.value and group_name.field_name = 'group_name' where record.field_name = 'record_id' and record.record=active_y.record and record.project_id = 2129 group by record.value ORDER BY record.value",,,,,,"[wg_y] = '1'",,LV,,,,
+wg_status,request,,radio,"Has the Working Group reviewed this document?","1, Yes, they have reviewed and approved.|2, They are currently reviewing.|3, No",,,,,,"[wg_y] = '1'",,LV,,,,
+wg_noreview,request,,notes,"Why has the Working Group not reviewed the document?",,,,,,,"[wg_status] = '3'",,LV,,,,
+writeg_y,request,"Writing Group",yesno,"Is there a Writing Group associated with this concept?",,,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '99' or [request_type] = '4'",,LV,,,,
+writeg_status,request,,radio,"Has the Writing Group reviewed this document?","1, Yes, they have reviewed and approved.|2, They are currently reviewing.|3, No",,,,,,"[writeg_y] = '1'",,LV,,,,
+writeg_noreview,request,,notes,"Why has the Writing Group not reviewed the document?",,,,,,,"[writeg_status] = '3'",,LV,,,,
+confirm_content,request,"Document Contents",radio,"Does your document include the following items?
+(1) Author names
+(2) Author affiliations
+(3) Acknowledgments
+(4) Grant numbers","1, Yes | 0, No | 9, Not applicable",,,,,,"[request_type] = '2' or [request_type] = '3' or [request_type] = '4'",,LV,,,,
+content_warning,request,,descriptive,"<div class='red'><strong>The EC needs to review these fields in order to approve a publication. </strong> Please revise your document to include this information, or upload a second document below that includes this information.</div>",,,,,,,"[confirm_content] = '0'",,,,,,
+editable_txt,request,"Request File(s)",descriptive,"<div class='blue'>Please upload a copy of your file in <strong>editable format</strong> (e.g., MS Word for Concept Sheets and Manuscripts, MS PowerPoint for Slides and Posters).</div>",,,,,,,,,,,,,
+request_file,request,,file,"Upload your [request_type] file
+<div style=""font-weight:lighter;font-style:italic"">If the file is associated with a concept, rename the file to include the concept number at the beginning of the filename. <br />(e.g., MR001_abstract_Jan2017.docx)</div>",,,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+extra_file1,request,,file,"Extra file #1
+<div style=""font-weight:lighter;font-style:italic"">Optional file upload for additional documents, separate manuscript tables (if applicable), etc.</div>",,,,,,,,,LV,,,,
+extra_file2,request,,file,"Extra file #2",,,,,,,"[extra_file1] <> ''",,LV,,,,
+extra_file3,request,,file,"Extra file #3",,,,,,,"[extra_file2] <> ''",,LV,,,,
+extra_file4,request,,file,"Extra file #4",,,,,,,"[extra_file3] <> ''",,LV,,,,
+extra_file5,request,,file,"Extra file #5",,,,,,,"[extra_file4] <> ''",,LV,,,,
+extra_file6,request,,file,"Extra file #6",,,,,,,"[extra_file5] <> ''",,LV,,,,
+request_title,request,"Request Description",notes,"Title of your [request_type] document<div style=""font-weight:lighter;font-style:italic"">Copy and paste the full title of your concept sheet proposal, manuscript, abstract, or other submission. This title will be used to identify your request for the Consortium. (e.g.,  Site Capacity to Screen, Prevent, Diagnose, and Manage NCDs in Low- to Middle-Income Countries.)</div>",,,,,,,,y,LV,,,," @HARMONIST-VAR-MEDIUM"
+request_description,request,,notes,"Description of request / Message to the Reviewers<div style=""font-weight:lighter;font-style:italic"">(This text will be displayed to the reviewers.)</div>",,,,,,,,,LH,,,,
+contact_txt,request,"Request Contact Person",descriptive,"<div style=""font-weight:lighter;"">This person will be listed as the point of contact for the request and any resulting responses. <br />Please designate one person.</div>",,,,,,,,,,,,,
+contact_name,request,,text,"Contact name",,,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+contact_email,request,,text,"Contact email",,,email,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+contact_region,request,,sql,"Contact's Research Group","select record.record as record, CONCAT( max(if(region_name.field_name = 'region_name',region_name.value, '')), ' (', max(if(region_code.field_name = 'region_code', region_code.value, '')), ') ' ) as value from redcap_data record left join redcap_data activeregion_y on activeregion_y.project_id = 2127 and activeregion_y.record = record.value and activeregion_y.field_name = 'activeregion_y' and activeregion_y.value ='1' left join redcap_data region_code on region_code.project_id = 2127 and region_code.record = record.value and region_code.field_name = 'region_code' left join redcap_data region_name on region_name.project_id = 2127 and region_name.record = record.value and region_name.field_name = 'region_name' where record.field_name = 'record_id' and record.record=activeregion_y.record and record.project_id = 2127 group by record.value ORDER BY region_name.value",,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+nextsteps_txt,request,"Next Steps",descriptive,"<div style=""font-weight:lighter"">Once you submit this request, the Contact Person named above will receive a confirmation email. Your Consortium Coordinating Team also will receive an automatic email notification of a new request submission.
+<br />Next, your request will be reviewed and processed. <b>The Coordinating Team will assign a due date to your request based on consortium review protocols</b>.  
+<br /><b>The Contact Person will be copied once the Request is posted for review on the Hub.</b></div>",,,,,,,,,,,,,
+suggest_d,request,,text,"Suggested due date for request",,,date_ymd,,,,,,LV,,,,
+contactnotification_y,request,,checkbox,"Receive email notifications when reviewers post comments, files, and votes on your request?
+<div style=""font-weight:lighter;font-style:italic"">(Only available if [contact_email] matches an active Hub account.)</div>","1, Yes",,,,,,,,LV,,,," @DEFAULT='1'"
+request_txt,request,,notes,"Private message for Hub Admins
+<div style=""font-weight:lighter;font-style:italic"">(Optional comments for the admins who will review and post the request. These comments will not be displayed to the reviewers.) </div>",,,,,,,,,LV,,,,
+request_summary,admin_review,"Request Summary",descriptive,"<div style=""font-weight:lighter""><b>Contact Person:</b> 
+[contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a>
+
+<b>Review Type:</b> 
+[request_type]
+
+<b>Title:</b> 
+[request_title]
+
+<b>Request Description:</b>
+ [request_description]
+
+<b>Message to Admins:</b>
+ [request_txt]
+
+<b>User-suggested Due Date</b> (if applicable): 
+[suggest_d]
+</div>",,,,,,,,,,,,,
+contactperson_id,admin_review,"Confirm this Setting",sql,"Contact Person:
+                                  <span style='font-weight:lighter;'>[contact_name], <a href='mailto:[contact_email]'>[contact_email]</a></span>
+
+                                    If blank, map this person to official Hub Members List
+                                    <div style='font-weight:lighter;font-style:italic'>((Find the name above in the official list. If it doesn't exist, you can add this person to the People (5) project or list their PI's name instead.)</div>","SELECT a.record,   CONCAT(   max(if(a.field_name = 'firstname', a.value, '')),    ' ',   max(if(a.field_name = 'lastname', a.value, '')),   ' | ',    max(if(a.field_name = 'email', a.value, ''))) as value  FROM redcap_data a  WHERE a.project_id=2128 GROUP BY a.record ORDER BY value",,autocomplete,,,,,,LV,,,,
+admin_txt,admin_review,,descriptive,"<div style=""color:white; text-align:center; border: 1px #34495e; background-color: #2c3e50;""><h3 style=""margin:0px; padding:10px"">Complete Fields Below</h3></div>",,,,,,,,,,,,,
+reviewer_id,admin_review,,sql,"Reviewer Username","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 2128 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 2128 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 2128 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,,
+due_d,admin_review,,text,"Assign due date for Consortium review",,,date_ymd,,,,,y,LV,,,," @DEFAULT='[suggest_d]'
+@HARMONIST-VAR-CRITICAL"
+mr_temporary,admin_review,,text,"Assign Tracking Number
+<div style=""font-weight:lighter;font-style:italic"">Ignore or hide this field if your consortium does not assign a tracking number at this point.</div>",,,,,,,,,LV,,,," @HARMONIST-VAR-CRITICAL"
+admin_internal_notes,admin_review,,notes,"Internal Tracking Notes 
+<div style=""font-weight:lighter;font-style:italic"">(Admin reference only)</div>",,,,,,,,,LV,,,,
+approval_y,admin_review,,radio,"<div class=""blue""><b>Approve Request?</b>
+<span style=""font-weight:lighter;font-style:italic"">(Once this request is approved, it will be posted to the Consortium Review Dashboard.)</span></div>","1, <span style=""color:#27ae60; font-weight:bold;"">Approve</span> | 0, <span style=""color:#e74c3c; font-weight:bold;"">Reject</span> | 9, Deactivate Request <i>(will hide from system,  e.g., duplicates, testing requests)</i>",,,,,,,,LV,,,," @HARMONIST-VAR-CRITICAL"
+admin_noemail,admin_review,,radio,"Do not email Contact Person","1,",,,,,,"[approval_y] = '1'",,,,,,
+admin_review_notes,admin_review,,notes,"Admin Announcement to Consortium Reviewers
+<div style=""font-weight:lighter;font-style:italic"">(These notes will be displayed on the Consortium Requests Dashboard along with the message from the Contact Person.)</div>",,,,,,,"[approval_y] = '1'",,LV,,,,
+status_usage_txt,dashboard_voting_status,,descriptive,"<div style=""font-weight:lighter"">This is a <b>repeating form</b>. One copy of this form will be stored for each Research Group participating in voting. The ""repeat instance"" IDs will correspond to the record IDs of the voting regions, as stored in the corresponding ""Research Groups"" REDCap project. 
+
+For example, if Vanderbilt is record ID #1 in the Research Groups project and is designated as a voting region, then repeat instance #1 of this form will store voting data for Vanderbilt.</div>",,,,,,,,,,,,,
+responding_region,dashboard_voting_status,,sql,"Research Group","SELECT a.record,   CONCAT(   max(if(a.field_name = 'region_name', a.value, NULL)),    ' (',   max(if(a.field_name = 'region_code', a.value, NULL)),   ') ' ) as value  FROM redcap_data a  WHERE a.project_id=2127  GROUP BY a.record  ORDER BY value",,,,,,,,,,,,
+region_response_status,dashboard_voting_status,,dropdown,"Request Status","0, Not Started|1, In Progress|2, Complete",,,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+region_vote_status,dashboard_voting_status,,dropdown,"Vote Status","1, Approved | 0, Not Approved | 9, Abstained/Not applicable",,,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+region_update_ts,dashboard_voting_status,,text,"Last Update Timestamp",,,datetime_seconds_ymd,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+region_close_ts,dashboard_voting_status,,text,"Research Group Completion Timestamp",,,datetime_seconds_ymd,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+finalizerequest_txt,finalization_of_request,"Voting Complete - Finalize Request",descriptive,"<div style=""font-weight:lighter""><b>[request_type]</b>, [request_title]
+[contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a>
+</div>",,,,,,,,,,,,,
+finalize_y,finalization_of_request,,radio,"Finalize this Request
+<div style=""font-weight:lighter;font-style:italic"">It is OK to finalize a request before the system detects all votes complete.</div>","1, <span style=""color:#1F8B4D;font-weight:bold"">Approved</span> | 2, <span style=""color:#e74c3c; font-weight:bold;"">Rejected</span>",,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+final_d,finalization_of_request,,text,"Request finalization date (Approval date)
+<div style=""font-weight:lighter;font-style:italic"">It is OK to backdate this to the actual approval date.</div>",,,date_ymd,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+finalizer_id,finalization_of_request,,sql,"Finalizing Person","SELECT a.record, CONCAT(a.value, ' ', b.value) as value FROM (SELECT record, value FROM redcap_data WHERE project_id = 2128 AND field_name = 'firstname') a JOIN (SELECT record, value FROM redcap_data where project_id = 2128 and field_name = 'lastname') b ON b.record=a.record JOIN (SELECT record, value from redcap_data where project_id = 2128 and field_name = 'harmonistadmin_y' and value = 1) c ON c.record=a.record ORDER BY a.value, b.value",,,,,,,,LV,,,,
+detected_complete,finalization_of_request,,checkbox,"All votes complete (auto-detected)
+<div style=""font-weight:lighter;font-style:italic"">This automatic check runs every time a new vote is submitted. </div>","1, YES",,,,,,,,,,,," @HIDDEN-SURVEY @READONLY
+@HARMONIST-VAR-CRITICAL"
+detected_complete_ts,finalization_of_request,,text,"Auto-detection Time
+<div style=""font-weight:lighter;font-style:italic"">This automatic check runs once per day, according to your server settings.</div>",,,datetime_seconds_ymd,,,,,,,,,," @HIDDEN-SURVEY @READONLY
+@HARMONIST-VAR-CRITICAL"
+postfinalization_txt,finalization_of_request,"Next Steps",descriptive,"<span style=""font-weight:lighter"">The Hub will send ""next step"" emails to the author after a request is finalized.
+
+See Email Alerts module email settings to configure the contents of these emails.
+</span>
+",,,,,,,,,,,,,
+showauthoremail_y,finalization_of_request,,checkbox,"Show text of email to author 
+<div style=""font-weight:lighter;font-style:italic"">Actual text is in Email Alerts module - this is a copy that needs to be updated if changes to the Alerts are made.</div>","1, Show text",,,,,,,,LV,,,,
+custom_note,finalization_of_request,,notes,"Custom note to include in email",,,,,,,,,LV,,,,
+authoremail_txt,finalization_of_request,,descriptive,"<div style=""font-weight:lighter;font-style:italic"">Insert text from your Email Alerts module email settings.</div>",,,,,,,"[showauthoremail_y(1)] = '1'",,,,,,
+finalize_noemail,finalization_of_request,,radio,"<div style=""font-weight:lighter;font-style:italic"">For Admin Use (action must be configured in Email Alerts):</div>
+Skip Contact notification ","1, Do not send notification email (the author will not receive an email notifying them of a completed review and requesting followup documents)",,,,,,,,LV,,,,
+finaldocs_concept_txt,final_docs_request_survey,Instructions,descriptive,"<div style=""font-weight:lighter;""><b>Concept:</b> [request_title]</div>
+<div style=""font-weight:lighter;""><b>Upload a ""final"" version of your concept sheet</b><ul><li>Include all changes requested by the reviewers</li><li>Remove any document comments or change tracking</li></ul></div><div style=""font-weight:lighter"">Submitting this form will trigger an email to the concept sheet management team. You will receive a notification email when they assign a concept tracking number. </div>
+<div class=""green"">You must complete this form to receive an <b> tracking number</b> for your Concept Sheet.</div>",,,,,,,"[request_type] = '1' or [request_type] = '5'",,,,,,
+finaldocs_txt,final_docs_request_survey,,descriptive,"For logging purposes, please upload a final copy of your  [request_type].
+<div style=""font-weight:lighter;font-style:italic"">In this ""final"" version of your document<ul><li>Include all reviewer-requested changes</li><li>Remove any document comments or change tracking</li></ul></div>",,,,,,,"[request_type] <> '1' and [request_type] <> '5'",,,,,,
+author_doc,final_docs_request_survey,"File Upload",file,"Word Document (DOC/DOCX) - final version",,,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+finaldocs_noemail,final_docs_request_survey,,radio,"Skip Follow-up Emails","1, Do not send notification email (the Admin team will not receive an email notifying them that the documents have been uploaded)",,,,,,,,LV,,,," @HIDDEN-SURVEY"
+summary_txt,tracking_number_assignment_survey,"New Concept Summary",descriptive,"Type: <span style=""font-weight:lighter"">[request_type]</span>
+
+Title: <span style=""font-weight:lighter"">[request_title]</span>
+
+Contact: <span style=""font-weight:lighter"">[contact_name], <a href=""mailto:[contact_email]"">[contact_email]</a></span>
+
+<span style=""font-weight:lighter; font-style:italic"">See email attachment for concept sheet file.</span>",,,,,,,,,,,,,
+mr_assigned,tracking_number_assignment_survey,"Steps to Finalize the Concept Approval",text,"1. Assign a Concept Tracking Number
+<div style=""font-weight:lighter;font-style:italic"">Edit this text to provide an example of your format.</div>",,,,,,,,y,LV,,,," @DEFAULT=""[mr_temporary]""
+@HARMONIST-VAR-CRITICAL"
+filesteps_txt,tracking_number_assignment_survey,,descriptive,"2. Update the Concept File <div style=""font-weight:lighter""><ul><li><i>Revise these instructions to match your consorium workflow.</i></li><li>Download the Word document attached to the email.</li><li>Add the <b>EC approval date ([final_d])</b> and <b>assigned MR number ([mr_assigned]).</b> </li><li>Save and rename the <b>Word document</b> to include the MR number. </li><li>Save a <b>PDF version</b> of the same document.</li></div>",,,,,,,,,,,,,
+finalconcept_doc,tracking_number_assignment_survey,,file,"3. Upload the Concept Word Document (DOC/DOCX)
+",,,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+finalconcept_pdf,tracking_number_assignment_survey,,file,"4. Upload the PDF version.
+<div style=""font-weight:lighter;font-style:italic"">The Hub requires a PDF version to display the concept in-line on the webpage.</div>",,,,,,,,y,LV,,,," @HARMONIST-VAR-CRITICAL"
+mr_copy_ok,tracking_number_assignment_survey,"Next Steps (optional)",checkbox,"Copy this information into the Concept Sheets list <div style=""font-weight:lighter;font-style:italic"">(create new REDCap record with this Concept Tracking Number, title, contact person, approval date, and associated files)</div>","1, Yes, create <b>[mr_assigned]</b>",,,,,,,,LV,,,," @DEFAULT='1'
+@HARMONIST-VAR-CRITICAL"
+mr_noemail,tracking_number_assignment_survey,,checkbox,"Skip Notifications","1, Do not send notification to <b>contact person</b> (the author will not receive an email notifying them of the assigned Tracking Number) | 2, Do not send <b>secondary notification email</b> (e.g., project managers' mailing list), if one has been configured in the Email Alerts tool.",,,,,,,,LV,,,,
+request_status,logging_variables,"Automatically Calculated Variables",dropdown,"Current Status of Request","0, Open | 1, Open - Revised | 2, Closed",,,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+requestopen_ts,logging_variables,,text,"Request Open Timestamp
+<span style=""font-weight:lighter;font-style:italic"">(pull from survey timestamp)</span>",,,,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+review_d,logging_variables,,text,"Request review date",,,date_ymd,,,,,,,,,," @HIDDEN-SURVEY @TODAY @READONLY
+@HARMONIST-VAR-CRITICAL"
+requestclose_d,logging_variables,,text,"Close Date
+<span style=""font-weight:lighter;font-style:italic"">(calculate from vote status)</span>",,,date_ymd,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+workflowcomplete_d,logging_variables,,text,"Workflow Completion Date
+<span style=""font-weight:lighter;font-style:italic"">(set with hook after Request Workflow. Workflow depends on Request Type category.)</span>",,,date_ymd,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+edit_d_v2,logging_variables,,text,"Last Edit Date",,,date_ymd,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+revision_counter_total,logging_variables,,text,"Revision Counter Total
+<span style=""font-weight:lighter;font-style:italic"">(auto-calculated number of times this request has been revised by the author)</span>",,,,,,,,,,,,," @HARMONIST-VAR-CRITICAL"
+request_contact_display,logging_variables,,text,"User Display Name
+<span style=""font-weight:lighter;font-style:italic"">(either mapped name from Harmonist 5 or user-entered name)</span>",,,,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+follow_activity,logging_variables,,notes,"List of User IDs Following Activity",,,,,,,,,,,,," @READONLY
+@HARMONIST-VAR-CRITICAL"
+request_summary_sent_y,logging_variables,,checkbox,"Has the request summary been sent to the request author? (post request finalization)","1, Yes",,,,,,,,,,,," @HARMONIST-VAR-CRITICAL"

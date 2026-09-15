@@ -1,0 +1,8 @@
+/vendor
+psalm.xml
+/node_modules
+**/.idea/
+css/custom.css
+package.json
+package-lock.json
+.php-cs-fixer.cache

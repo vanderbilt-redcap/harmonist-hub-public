@@ -1,0 +1,74 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.6.2/iframeResizer.min.js" integrity="sha256-aYf0FZGWqOuKNPJ4HkmnMZeODgj3DVslnYf+8dCN9/k=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ getUrl('js/jquery-3.7.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/jquery-ui.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('bootstrap-5.3.8/js/bootstrap.bundle.js') }}"></script>
+
+<script type="text/javascript" src="{{ getUrl('js/sortable.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ getUrl('js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/dataTables.select.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/buttons.flash.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/buttons.html5.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/buttons.print.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/jszip.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/pdfmake.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/vfs_fonts.js') }}"></script>
+<script type='text/javascript' src="{{ APP_PATH_WEBROOT_ALL ~ 'Resources/webpack/css/tinymce/tinymce.min.js' }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/Chart.min.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/chartjs-plugin-labels.js') }}"></script>
+<script type="text/javascript" href="{{ getUrl('manifest.json') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/dataTables.responsive.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ getUrl('js/functions.js') }}"></script>
+<script type="text/javascript" src="{{ getUrl('js/DataRequestBuilderStepLoader.js') }}"></script>
+
+<link type='text/css' href="{{ getUrl('css/sortable-theme-bootstrap.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('css/custom.min.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('css/jquery.dataTables.min.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('css/style.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('css/tabs-steps-menu.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('css/jquery-ui.min.css') }}" rel='stylesheet' media='screen' />
+<link type='text/css' href="{{ getUrl('js/fonts-awesome/css/font-awesome.min.css') }}" rel='stylesheet' media='screen' />
+<link rel="stylesheet" href="{{ getUrl('css/responsive.jqueryui.min.css') }}" />
+<link rel="stylesheet" href="{{ getUrl('css/responsive.dataTables.min.css') }}" />
+
+<script language="JavaScript">
+    document.addEventListener('DOMContentLoaded', function () {
+        // Enable Bootstrap 5 tooltips globally
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    //Make the chevron on card tables to rotate dynamically (up when expanded, down when collapsed)
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcons = document.querySelectorAll('.toggle-icon');
+
+        toggleIcons.forEach(function (toggle) {
+            const collapseTarget = document.querySelector(toggle.getAttribute('href'));
+            const chevron = toggle.querySelector('i');
+
+            // Initialize chevron state based on collapse state
+            if (collapseTarget.classList.contains('show')) {
+                chevron.classList.remove('fa-chevron-down');
+                chevron.classList.add('fa-chevron-up');
+            } else {
+                chevron.classList.remove('fa-chevron-up');
+                chevron.classList.add('fa-chevron-down');
+            }
+
+            // Update chevron rotation on collapse events
+            collapseTarget.addEventListener('show.bs.collapse', function () {
+                chevron.classList.remove('fa-chevron-down');
+                chevron.classList.add('fa-chevron-up');
+            });
+
+            collapseTarget.addEventListener('hide.bs.collapse', function () {
+                chevron.classList.remove('fa-chevron-up');
+                chevron.classList.add('fa-chevron-down');
+            });
+        });
+    });
+</script>
