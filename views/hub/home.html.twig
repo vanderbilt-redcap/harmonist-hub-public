@@ -1,0 +1,84 @@
+<div class="container">
+    <h3>Home Page</h3>
+    <p class="hub-title"></p>
+</div>
+
+<div style="margin-bottom: 70px;display:none" id="succMsgContainer">
+    <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;">
+        Deadlines and Events have been successfully updated.
+    </div>
+</div>
+
+<div style="margin-bottom: 70px;display:none" id="succMsgContainer_an">
+    <div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;">
+        Announcements have been successfully updated.
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        {% include 'hub/partials/announcements.html.twig' %}
+    </div>
+</div>
+
+<div class="row">
+    <!-- Row 1 -->
+    <div class="col-sm-9">
+        <div class="row">
+            <!-- Open Requests Section -->
+            <div class="col-sm-4">
+                {% include 'hub/partials/open_requests.html.twig' %}
+            </div>
+
+            <!-- Deadlines and Events Section -->
+            <div class="col-sm-8">
+                {% include 'hub/partials/deadlines.html.twig' %}
+            </div>
+        </div>
+        <div>
+            <!-- My Requests Section -->
+            <div class="col-sm-12">
+                {% include 'hub/partials/my_requests.html.twig' %}
+            </div>
+        </div>
+        <div>
+            <!-- My Concepts Section -->
+            <div class="col-sm-12">
+                {% include 'hub/partials/my_concepts.html.twig' %}
+            </div>
+        </div>
+        <div>
+            <!-- Recent Activity Section -->
+            <div class="col-sm-12">
+                {% include 'hub/partials/recent_activity.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="col-sm-3">
+        <!-- Active Data Calls Section -->
+        {% if settings['deactivate_datahub___1'] != "1" %}
+            <div>
+                {% include 'hub/partials/active_data_calls.html.twig' %}
+            </div>
+        {% endif %}
+
+        <!-- Hub Metrics Section -->
+        <div>
+            {% include 'hub/partials/metrics.html.twig' %}
+        </div>
+
+        <!-- Calendar Section -->
+        {% if settings['calendar_active'] == "1" %}
+            <div>
+                {% include 'hub/partials/calendar.html.twig' %}
+            </div>
+        {% endif %}
+
+        <!-- Quick Links Section -->
+        <div>
+            {% include 'hub/partials/quicklinks.html.twig' %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="card mb-4 home-panel">
+    <div class="card-header border-bottom-0">
+        <h6 class="card-title d-flex justify-content-between align-items-center">
+            Recent Activity
+            <a href="{{ getUrl('index.php', true) ~ '&option=hra' }}">View more</a>
+        </h6>
+    </div>
+    <div class="list-group list-group-flush table-no-borders">
+        {% set has_html = false %}
+        {% for activity in recent_activity %}
+            {% if activity.html is defined %}
+                <table class="table">
+                    <tr>
+                        <td class="ps-3">
+                            <em>
+                            {{ activity.html | raw }}
+                            </em>
+                        </td>
+                    </tr>
+                </table>
+                {% set has_html = true %}
+            {% endif %}
+        {% endfor %}
+        {% if not has_html %}
+            {% for activity in recent_activity %}
+
+                    <table class="table">
+                    {% if activity.is_revision %}
+                        <tr>
+                            <td>
+                                <i class="fa fa-fw fa-file-text-o text-success" aria-hidden="true"></i>
+                                <span class="time">{{ activity.time }}</span>
+                                <strong>{{ activity.name }}</strong> submitted a <b>revision</b> for
+                                <a href="{{ activity.link }}" target="_blank">{{ activity.title }}</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="pb-1">
+                                {% set icon = '' %}
+                                {% set text = '' %}
+
+                                {% if activity.has_comment %}
+                                    {% set icon = '<i class="fa fa-fw fa-comment-o text-info" aria-hidden="true"></i>' %}
+                                {% endif %}
+
+                                {% if activity.has_vote %}
+                                    {% set icon = '<i class="fa fa-fw fa-check text-info" aria-hidden="true"></i>' %}
+                                {% endif %}
+
+                                {% if activity.has_file %}
+                                    {% set icon = '<i class="fa fa-fw fa-file-o text-info" aria-hidden="true"></i>' %}
+                                {% endif %}
+
+                                {% if icon == '' %}
+                                    {% set icon = '<i class="fa fa-fw fa-check" style="color: lightgrey;" aria-hidden="true"></i>' %}
+                                {% endif %}
+
+                                {% if activity.has_comment and activity.has_vote and activity.has_file %}
+                                    {% set text = '<strong>comment, vote, and file</strong>' %}
+                                {% elseif activity.has_comment and activity.has_vote %}
+                                    {% set text = '<strong>comment and vote</strong>' %}
+                                {% elseif activity.has_comment and activity.has_file %}
+                                    {% set text = '<strong>comment and file</strong>' %}
+                                {% elseif activity.has_vote and activity.has_file %}
+                                    {% set text = '<strong>vote and file</strong>' %}
+                                {% elseif activity.has_comment %}
+                                    {% set text = '<strong>comment</strong>' %}
+                                {% elseif activity.has_file %}
+                                    {% set text = '<strong>file</strong>' %}
+                                {% elseif activity.has_vote %}
+                                    {% set text = '<strong>vote</strong>' %}
+                                {% endif %}
+
+                                {{ icon|raw }}
+                                <strong>{{ activity.name }}</strong> submitted {% if text %}a {{ text|raw }} for{% else %}for{% endif %}
+                                <a href="{{ activity.link }}" target="_blank">{{ activity.title }}</a>
+                                <span class="time">{{ activity.time }}</span>
+                            </td>
+                        </tr>
+                    {% endif %}
+                            </table>
+
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

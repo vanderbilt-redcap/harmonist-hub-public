@@ -1,0 +1,15 @@
+<div style="margin-top: 40px">
+    <div class="alert alert-{{ message_type }} {{ message_class }} col-md-12" id="{{ message_id }}">
+        {% if message_text is defined and message_text is not empty %}
+            {{ message_text|raw }}
+        {% elseif block('message_text') is defined %}
+            {% block message_text %}
+            {% endblock %}
+        {% else %}
+            <div>No message provided</div>
+        {% endif %}
+        <div class="float-end">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>

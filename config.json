@@ -1,0 +1,210 @@
+{
+  "name": "Harmonist Hub Public",
+
+  "namespace": "Vanderbilt\\HarmonistHubPublicExternalModule",
+  "framework-version": 16,
+  "authors": [
+    {
+      "name": "Eva Bascompte Moragas",
+      "email": "datacore@vumc.org",
+      "institution": "Vanderbilt University Medical Center"
+    }
+  ],
+
+  "links": {
+    "project": [
+      {
+        "name": "Harmonist Hub",
+        "icon": "fas fa-database",
+        "url": "index.php?NOAUTH",
+        "target": "_blank"
+      },
+      {
+        "name": "Hub Updates",
+        "icon": "fas fa-refresh",
+        "url": "hub-updates/index.php",
+        "show-header-and-footer": true
+      },
+      {
+        "name": "Hub REDCap User Management",
+        "icon": "fas fa-user",
+        "url": "hub-user-management/index.php",
+        "show-header-and-footer": true
+      },
+      {
+        "name": "Data Downloads User Management",
+        "icon": "fas fa-user",
+        "url": "hub-user-management/data_downloads_user_management.php",
+        "show-header-and-footer": true
+      }
+    ]
+  },
+
+  "enable-no-auth-logging": true,
+
+  "no-auth-pages":["downloadFile","loadPDF","functions", "index","hub/hub_login","hub/hub_getLink","surveyPassthru",
+    "hub/hub_requests_view_all_votes_AJAX","hub/hub_requests_view_mixed_votes_AJAX","hub/generate_publications_pdf","hub/generate_outputs_excel",
+    "hub/hub_request_admin_vote_AJAX","hub/hub_data_upload_security_AJAX","hub/hub_request_follow_activity_AJAX", "hub/hub_admin_update_publications_AJAX",
+    "sop/sop_step_1_save_AJAX","sop/sop_step_2_save_AJAX","sop/sop_step_3_save_AJAX","sop/sop_step_4_save_AJAX","sop/sop_step_5_generate_zip",
+    "sop/sop_data_request_title_admin_status_AJAX","sop/sop_submit_data","sop/sop_submit_data_change_status_AJAX","sop/sop_request_data",
+    "sop/sop_make_private","sop/sop_delete_data_request","sop/sop_copy_data_request_AJAX","sop/sop_explore_data_AJAX",
+    "hub-updates/generate_pdf", "hub/hub_my_requests_archive", "hub/hub_admin", "crontasks/cron_publications",
+    "sop/sop_data_request_follow_activity_AJAX", "hub/hub_publications",
+    "hub/hub_projects", "hub/hub_projects_title", "hub/hub_concepts_tracker_spreadsheet", "hub/hub_concept_title", "hub/hub_concepts"
+  ],
+
+  "description": "Installs the Harmonist Hub consortium management platform, a series of SQL-linked REDCap projects with a web interface and auto-email workflow for managing concept sheets, review requests, voting, publications, data requests, and metrics for multi-site research consortia. Demo and training videos available at dataharmonist.org. Caution: this module will install ~30 REDCap projects.",
+
+  "project-settings": [
+    {
+      "key": "disable-crons",
+      "name": "<div>Disable Crons</div><font style='color:red;font-style:italic'>*This will stop all crons on the Hub from running</font>",
+      "type": "checkbox"
+    },
+    {
+      "key": "hub-data-hub-path-description",
+      "name": "<div class=\"alert alert-info\" style=\"border-color: #bce8f1 !important;\">\n <strong>Data Hub Credentials Data</strong><br>\n A REDCap super user administrator is needed to update this data. To use the Data Hub and activate these fields, please contact Harmonist.\n</div>",
+      "type": "descriptive"
+    },
+    {
+      "key": "credentials-path",
+      "name": "Add a path for the Data Hub credentials file",
+      "type": "text",
+      "super-users-only": true
+    },
+    {
+      "key": "aws-file",
+      "name": "Filename of the AWS file",
+      "type": "text",
+      "super-users-only": true
+    },
+    {
+      "key": "encryption-file",
+      "name": "Filename of the Encryption file",
+      "type": "text",
+      "super-users-only": true
+    },
+    {
+      "key": "hub-projectname",
+      "name": "Hub Name (if \"TEST\", all projects will be named TEST Hub.)",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "key": "hub-type-description",
+      "name": "<div>Select the default profile for your installation.</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul style='margin-bottom: 0 !important;'><li><strong>Solo</strong> (Hub only)</li><li><strong>Basic</strong> (Hub with Basic Data Hub (REDCap features only like data request builder and file transfer))</li><li><strong>All</strong> (Hub with Data Hub and Data Toolkit)</li></ul></div><div style='color:red'><em>*This is a ONE TIME installation only. Changing the value after the installation has finished will not change the settings.</em></div>",
+      "type": "descriptive"
+    },
+    {
+      "key": "hub-profile",
+      "name": "Hub Profile",
+      "required": true,
+      "choices": [
+        {
+          "name": "Solo",
+          "value": "solo"
+        },
+        {
+          "name": "Basic",
+          "value": "basic"
+        },
+        {
+          "name": "All",
+          "value": "all"
+        }
+      ],
+      "type":"radio"
+    },
+    {
+      "key": "cookie-key",
+      "name": "Token Encryption Code (will be automatically populated during Hub installation. If needed to change, generate a 64-character hexadecimal string [characters 0-9 and a-f only])",
+      "type": "password"
+    },
+    {
+      "key": "users",
+      "name": "User Permissions",
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings": [
+        {
+          "key": "user-permission",
+          "name": "<div>Select a REDCap user to add to all Hub projects. </div><div>This will automatically add the user to the 30+ REDCap projects that power the Hub. The user will have \"Project Design and Setup\" rights on those projects. After initial setup, users will need to be added manually to all Hub projects.</div><br><font style='color:red;font-style:italic'>*This list shows all users on this REDCap project. Add users to this project before installing if you want to be able to select their usernames in this list.</font>",
+          "type": "user-list"
+        }
+      ]
+    },
+    {
+      "key": "hub-admin-notifications-description",
+      "name": "<div class=\"alert alert-info\" style=\"border-color: #bce8f1 !important;\">\n <strong>REDCap Administrator Notifications</strong><br>\n Some Hub EM changes, such as SQL field updates, can only be applied by REDCap administrators. The Hub will generate email notifications when such updates are needed. Please identify the email frequency and email recipients below.\n</div>",
+      "type": "descriptive"
+    },
+    {
+      "key": "admin-frequency",
+      "name": "Define email notification frequency (in days)<br>The Hub EM will send email reminders for administrator-only updates that have not yet been addressed",
+      "type": "text"
+    },
+    {
+      "key": "admin",
+      "name": "Admin Notification Email",
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings": [
+        {
+          "key": "admin-notifications",
+          "name": "Add the email address of a REDCap administrator to receive Hub EM update notifications",
+          "type": "text"
+        }
+      ]
+    }
+  ],
+
+  "crons": [
+    {
+      "cron_name": "cron_metrics",
+      "cron_description": "Cron that saves metrics every morning",
+      "method": "cronMethod",
+      "cron_frequency": "21600",
+      "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_delete",
+      "cron_description": "Cron that deletes expired datasets",
+      "method": "cronMethod",
+      "cron_frequency": "21600",
+      "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_monthly_digest",
+      "cron_description": "Cron that sends a status report monthly",
+      "method": "cronMethod",
+      "cron_frequency": "21600",
+      "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_publications",
+      "cron_description": "Cron that saves the publications txt file to generate the table in the HUB",
+      "method": "cronMethod",
+      "cron_frequency": "21600",
+      "cron_max_run_time": "3600"
+    },
+    {
+      "cron_name": "cron_req_finalized_notification",
+      "cron_description": "Cron that sends a notification when a request is finalized",
+      "method": "cronMethod",
+      "cron_frequency": "60",
+      "cron_max_run_time": "60"
+    },
+    {
+      "cron_name": "cron_hub_updates_data_notification",
+      "cron_description": "Cron that checks hub updates and notifies users and admins about them.",
+      "method": "cronMethod",
+      "cron_frequency": "28800",
+      "cron_max_run_time": "3600"
+    }
+  ],
+
+  "compatibility": {
+    "php-version-min": "8.2.4",
+    "redcap-version-min": "14.0.0"
+  }
+}

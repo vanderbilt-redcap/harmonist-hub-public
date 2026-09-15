@@ -1,0 +1,9 @@
+{% extends "_modal.html.twig" %}
+{% set modal_id = "announcements_survey" %}
+{% set modal_label_id = "announcementsSurveyLabel" %}
+{% set modal_title = "Announcements" %}
+
+{% block modal_body %}
+    <input type="hidden" value="0" id="announcement_loaded">
+    <iframe class="commentsform" id="announcements-frame" name="announcements-frame" message="U" src="{{ survey_link }}" style="border: none; height: 810px; width: 100%;"></iframe>
+{% endblock %}

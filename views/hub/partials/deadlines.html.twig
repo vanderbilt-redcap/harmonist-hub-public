@@ -1,0 +1,39 @@
+<div class="card">
+    <div class="card-header">
+        <h6 class="card-title">
+            Deadlines and Events
+            <a href="#" onclick="javascript:$('#deadlines_survey').modal('show');" style="cursor: pointer">
+                <span class="fa fa-cog" style="float: right; padding-right: 10px; color: #8c8c8c"></span>
+            </a>
+        </h6>
+    </div>
+    <div id="deadlinesAndEvents" class="table-no-borders">
+        <div class="table-responsive">
+            <table class="table sortable-theme-bootstrap" data-sortable>
+                {% if homepage %}
+                    <tbody>
+                    {% for event in deadlines %}
+                        {% if loop.first %}
+                            <thead>
+                            <tr>
+                                <th class="ps-3">Date</th>
+                                <th>Text</th>
+                            </tr>
+                            </thead>
+                        {% endif %}
+                        {{ event.print|raw }}
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="ps-3"><em>No deadlines or events</em></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="ps-3"><em>No deadlines available.</em></td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header d-flex align-items-center ps-4" style="min-height: 60px;">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="imgNavbar">
+                {% if logo_url %}
+                    <a href="{{ index_url ~ '&NOAUTH' }}" class="text-decoration-none d-inline-block">
+                        <img src="{{ logo_url }}" style="max-width:250px;height:40px;" class="wiki_logo_img" alt="{{ hub_project_name }} Logo">
+                    </a>
+                {% endif %}
+                {% if not token or 'sout' in request or not logo_url %}
+                    <a href="{{ index_url ~ '&NOAUTH' }}" class="text-decoration-none d-inline-block hub_header_title align-middle">
+                        <span>{{ hub_project_name }} Hub</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if token and 'sout' not in request %}
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 navbar-links">
+                    <li class="nav-item">
+                        <a class="nav-link {% if option is not defined or option == '' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH' }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if option == 'hub' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=hub' }}">
+                            Requests <span class="badge bg-secondary">{{ number_of_open_requests }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if option == 'cpt' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=cpt' }}">Concepts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if option == 'out' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=out' }}">Publications</a>
+                    </li>
+                    {% if not deactivate_projects %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if option == 'std' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=std' }}">Projects</a>
+                        </li>
+                    {% endif %}
+                    {% if settings.deactivate_datahub___1 != "1" %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if option == 'dat' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=dat' }}">Data Hub</a>
+                        </li>
+                    {% endif %}
+                    {% if is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if option == 'adm' %}active{% endif %}" href="{{ index_url ~ '&NOAUTH&option=adm' }}">
+                                Admin <span class="badge bg-secondary">{{ number_of_admin_requests }}</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <ul class="navbar-nav ms-auto pe-4">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="badge bg-primary">{{ person_region_code }}</span>&nbsp;&nbsp;{{ user_full_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ index_url ~ '&NOAUTH&option=pro' }}"><i class="fa fa-user fa-fw"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ index_url ~ '&NOAUTH&option=faq' }}"><i class="fa fa-support fa-fw"></i> Help</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ index_url ~ '&NOAUTH&sout' }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</nav>

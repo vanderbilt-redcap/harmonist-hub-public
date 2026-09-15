@@ -1,0 +1,128 @@
+<?php
+namespace Vanderbilt\HarmonistHubPublicExternalModule;
+include_once(__DIR__ ."/../projects.php");
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Cache-control" content="public">
+    <meta name="theme-color" content="#fff">
+    <link type='text/css' href='<?=$module->getUrl('css/sortable-theme-bootstrap.css')?>' rel='stylesheet' media='screen' />
+    <link type='text/css' href='<?=$module->getUrl('bootstrap-3.3.7/css/bootstrap.min.css')?>' rel='stylesheet' media='screen' />
+    <link type='text/css' href='<?=$module->getUrl('css/style.css')?>' rel='stylesheet' media='screen' />
+    <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
+    <link type='text/css' href='<?=$module->getUrl('css/styles_user_management.css')?>' rel='stylesheet' media='screen' />
+
+    <script type="text/javascript" src="<?=$module->getUrl('js/selectAll.js')?>"></script>
+    <script type="text/javascript" src="<?=$module->getUrl('js/data_downloads_user_management.js')?>"></script>
+
+    <script>
+        $(document).ready(function () {
+            let urlUserManagament = <?=json_encode($module->getUrl('hub-user-management/data_downloads_user_management_AJAX.php'))?>;
+            $('#remove_success_user_management').click(function (event) {
+                return manageUserFromDataDownloads(urlUserManagament,'remove');
+            });
+        });
+    </script>
+    <style>
+        #selectUserListDataTable thead {
+            display: none;
+        }
+        #selectUserListDataTable {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<?php
+if(isset( $_REQUEST['message'] )) {
+    echo '<div class="container-fluid p-y-1"><div class="alert alert-success fade in col-md-12" style="border-color: #b2dba1 !important;" id="succMsgContainer">'.$module->getMessageHandler()->fetchMessage('dataDownloadsUser',$_REQUEST['message']).'</div></div>';
+}
+?>
+<?php if (!empty($module->getDataDownloadsUsersHandler()->getErrorUserList())){ ?>
+    <div class="container" style="margin-top: 10px">
+        <div class="alert alert-warning col-md-12">
+            <div style="float: left;">Other users have conflicting permission issues. <br>
+                Please <strong>review the list of conflicts</strong> in order to enable their Data Download permissions.</div>
+            <form method="POST" action="<?=$module->getUrl('hub-user-management/error_user_list.php') . '&redcap_csrf_token=' . $module->getCSRFToken()?>" class="" id="resolved_list">
+                <div class="float-right"><button type="submit" name="option" value="update" class="btn btn-warning" style="display: block;margin-right: 10px;">Resolve Permission Conflicts</button></div>
+            </form>
+        </div>
+    </div>
+<?php } ?>
+<div style="padding-top:15px;padding-left:15px;">
+    <h3>Data Download Users Management</h3>
+</div>
+<div style="padding-top:15px;padding-left:15px;padding-bottom: 60px;">
+    The following users have the <b>correct permissions</b> to use Hub Data Downloads.
+</div>
+<?php
+$show = false;
+include_once ("data_downloads_user_management_buttons.php");
+?>
+<div class="container-fluid p-y-1"  style="margin-top:40px">
+    <table id="selectUserListDataTable" class="main table table-striped table-hover" style="border: 1px solid #dee2e6;" data-sortable>
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        $count = 0;
+        $data = $module->getDataDownloadsUsersHandler()->getSuccessUserList();
+        usort($data, fn($a, $b) => strcmp($a->getLastname(), $b->getLastname()));
+        foreach ($data as $index => $user) {
+            $count++;
+            $admin = "";
+            $adminText = "";
+            if($user->getHarmonistadminY() == "1"){
+                $admin = "<span class='label label-approved'>Admin</span>";
+                $adminText = "Admin";
+            }
+            $personDataEntryLink = $module->getDataDownloadsUsersHandler()->getDatEntryLink($user->getRecordId(),$_GET['pid']);
+            $name = $user->getFirstname()." ".$user->getLastname();
+            $userData = $name." ".$user->getRegionCode()." ".$admin;
+            ?>
+            <tr row="<?=$index?>" value="<?=$index?>" name="chkAll_parent_user">
+                <td style="width: 5%;">
+                    <input id="<?=$user->getRecordId()?>" value="<?=$user->getRecordId()?>" pid="<?=$count?>" user-data="<?=$userData;?>" onclick="selectData('<?= $index; ?>','user');" class='auto-submit' type="checkbox" name="chkAll_user" nameCheck='tablefields[]'>
+                </td>
+                <td>
+                    <a data-toggle="collapse" href="#collapse<?=$index?>" id="<?='table_'.$index?>" class="label label-as-badge-square ">
+                                                <span class="table_name" style="font-weight: normal;">
+                                                    <span style="padding-right: 10px;"><?=$name;?> <?=$user->getRegionCode();?></span>
+                                                    <?=$admin;?>
+                                                </span>
+                    </a>
+                    <a href="<?=$personDataEntryLink?>" target="_blank" style="float: right;padding-right: 15px;color: #337ab7;font-weight: bold;">View Record</a>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+        </tbody>
+    </table>
+</div>
+<div id="dialogWarning" title="WARNING!" style="display:none;">
+    <p>No users have been selected.</p>
+</div>
+<div id="removeUsersForm" title="WARNING!" style="display:none;">
+    <p>Are you sure you want to remove these users?</p>
+    <p>This will remove the user from the Data Downloads project and from the download secure data list.</p>
+    <div id="user_remove_list"></div>
+    <input type="hidden" id="checked_values_remove_user" name="checked_values_remove_user">
+    <input type="hidden" id="user_list_type" name="user_list_type" value="success">
+    <div class="modal-footer" style="padding-top: 30px;">
+        <a class="btn btn-danger" id="remove_success_user_management"  name="remove_success_user_management">Remove User</a>
+    </div>
+</div>
+<?php include_once (__DIR__ ."/../hub_spinner.php"); ?>
+</body>
+</html>

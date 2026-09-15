@@ -1,0 +1,10 @@
+{% extends "_alert_messages.html.twig" %}
+
+{% set message_type = "success" %}
+
+{% block message_text %}
+    Data Dictionary and projects successfully installed. To see the Project IDs, go to the
+    <a href="{{ globals.APP_PATH_WEBROOT }}DataEntry/record_status_dashboard.php?pid={{ pid }}" target="_blank">
+        Record Dashboard
+    </a>.
+{% endblock %}

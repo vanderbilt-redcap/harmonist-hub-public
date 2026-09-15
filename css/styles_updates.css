@@ -1,0 +1,144 @@
+/**RESET REDCAP LINK STYLES **/
+A.btn, A.btn:hover{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #ffffff; text-decoration: none; text-align:left; }
+A:link { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:visited { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:active { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #000066; text-decoration: none; text-align:left; }
+A:hover { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;color: #F00000;text-decoration: underline;text-align:left;}
+A.btn:hover {outline: 1px solid #4ca2ff;}
+.btn-admin,.btn-admin:hover{
+    color:#3e76cc !important;
+}
+/**COLUMNS**/
+.col-select{
+    width: 15px;
+}
+.section-header .col-select{
+    padding-top: 17px;
+}
+.col-status{
+    width: 80px;
+}
+.col-variable{
+    width: 200px;
+    padding-left:25px
+}
+/****/
+
+.title{
+    font-weight: normal;
+    padding-left: 15px;
+}
+.title, .title a{
+    font-size: 18px;
+}
+.panel-heading{
+    background-color: #D7D7D7;
+    border-color: #ddd;
+}
+.resolved-heading td{
+    background-color: #e9e9e9;
+    border-color: #ddd;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: revert-layer;
+}
+.resolved-view-changes{
+    float: right;
+    padding-right: 15px;
+    color: #337ab7 !important;
+    font-weight: bold;
+    margin-top: 3px;
+}
+.instrument-header{
+    background-color:#f5f5f5;
+    font-size: 15px;
+}
+.section-header th{
+    background-color:#ebebeb;
+    font-weight: bold;
+}
+.changed{background-color:#ffc107;}
+.added{background-color:#5d9451;}
+.removed{background-color:#cb410b;}
+.critical{background-color:#cb410b;}
+.medium{background-color:#ABA9A7;}
+.low{background-color:#E0DEDC;}
+a.critical{color: #fff;}
+.criticality{
+    vertical-align: -2px;
+    padding-left: 0px;
+}
+#ignore-table a.label span{
+    padding-right: 5px;
+}
+tr.rowSelected td{
+    background-color: #e6f5ff;
+}
+.resolved{
+    background-color: #dcdcdc;
+    border-color:#adacac;
+}
+.btn-secondary:hover{
+    color: #fff;
+    font-size: 14px;
+}
+.btn-resolved:hover {
+    color: #000;
+    background-color: #adacac;
+    border-color:#797979;
+}
+.btn-resolved {
+    background-color: #dcdcdc;
+    border-color: #adacac;
+    padding: 3px 10px;
+    line-height: 1em;
+}
+.badge a:hover{
+    font-size: 12px;
+}
+.download-pdf-all{
+    float: left;
+    margin-top: 14px;
+    color: #337ab7;
+    font-size: 15px;
+    cursor: pointer;
+}
+.download-pdf-all a:hover,.download-pdf-all-resolved a:hover{
+    font-size: 15px;
+}
+.download-pdf-all-resolved {
+    float: right;
+    font-size: 15px;
+    cursor: pointer;
+    padding:.2em .6em .2em;
+}
+.hub-update-last-updated{
+    font-size: 13px;
+    font-style: italic;
+    padding-right: 30px;
+    float: right;
+    margin-top: 5px;
+}
+.hub-update-last-updated-past-date{
+    color:#e74c3c !important;
+}
+.hub-update-last-updated-recent-date-badge{
+    color:#fff !important;
+    background-color: #5cb85c;
+}
+#selectDataTableHubUpdates tr.odd td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.even td {
+    background-color: #ffffff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates tr.rowSelected td{
+    background-color: #e6f5ff !important;
+}
+#selectDataTableHubUpdates.no-footer, #selectDataTableHubUpdates thead th, #selectDataTableHubUpdates thead td {
+    border-bottom: none;
+    padding-top: 0px;
+}

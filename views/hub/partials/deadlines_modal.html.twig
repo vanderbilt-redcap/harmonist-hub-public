@@ -1,0 +1,8 @@
+{% extends "_modal.html.twig" %}
+{% set modal_id = "deadlines_survey" %}
+{% set modal_label_id = "deadlinesSurveyLabel" %}
+{% set modal_title = "Deadlines and Events" %}
+
+{% block modal_body %}
+    <iframe class="commentsform" id="deadlines-frame" message="E" name="deadlines-frame" src="{{ survey_link }}" style="border: none; height: 810px; width: 100%;"></iframe>
+{% endblock %}

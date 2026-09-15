@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        {% include 'html_head.html.twig' %}
+    {% endblock %}
+</head>
+<body>
+<div class="container" style="margin: 0 auto; float: none; min-height: 900px;">
+    {% block content %}
+        {% include template_message %}
+    {% endblock %}
+</div>
+</body>
+</html>

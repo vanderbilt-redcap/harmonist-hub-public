@@ -1,0 +1,259 @@
+<?php
+namespace Vanderbilt\HarmonistHubPublicExternalModule;
+
+require_once dirname(__FILE__) . "/classes/HubData.php";
+
+if(ENVIRONMENT != "DEV") {
+    //Do not require on localhost
+    require_once ($module->getSecurityHandler()->getCredentialsServerVars("ENCRYPTION"));
+}
+
+$request_DU = $module->escape(\REDCap::getData($pidsArray['DATAUPLOAD'], 'json-array', null));
+krsort($request_DU);
+ArrayFunctions::array_sort_by_column($request_DU,'responsecomplete_ts',SORT_DESC);
+
+$array_downloads_by_concept = array();
+foreach ($request_DU as $down){
+    if(!array_key_exists($down['data_assoc_concept'],$array_downloads_by_concept)){
+        $array_downloads_by_concept[$down['data_assoc_concept']] = array();
+    }
+    if(!array_key_exists($down['data_assoc_request'],$array_downloads_by_concept[$down['data_assoc_concept']])){
+        $array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']] = array();
+    }
+    array_push($array_downloads_by_concept[$down['data_assoc_concept']][$down['data_assoc_request']],$down);
+}
+
+?>
+<script>
+    function toggleRowContent(td) {
+        const parentRow = td.closest('tr');
+        const hiddenRow = parentRow.nextElementSibling;
+        const icon = td.querySelector('.fa');
+
+        if (hiddenRow.classList.contains('d-none')) {
+            hiddenRow.classList.remove('d-none');
+            icon.classList.remove('fa-plus');
+            icon.classList.add('fa-minus');
+        } else {
+            hiddenRow.classList.add('d-none');
+            icon.classList.remove('fa-minus');
+            icon.classList.add('fa-plus');
+        }
+    }
+</script>
+<div>
+    <div class="mb-3">
+        <a href="<?=$indexUrl.'&NOAUTH&option=dat'?>">< Back to Data</a>
+    </div>
+    <div>
+        <h3>Retrieve Data</h3>
+        <p><?=filter_tags($settings['hub_download_data_text'])?></p>
+    </div>
+</div>
+<div>
+    <?php
+    if ($array_downloads_by_concept == "") { ?>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td><span><i>No Data available</i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    <?php } else if ($currentUser['allowgetdata_y___1'] != "1") { ?>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td class="ps-3"><span><i>You do not have permissions to retrieve data. Please contact an administrator.</i></span></td>
+            </tr>
+            </tbody>
+        </table>
+    <?php } else {
+        $data_printed = false;
+        foreach ($array_downloads_by_concept as $concept_id => $concept_table) {
+            foreach ($concept_table as $sop_id => $AllDataUp) {
+                $RecordSetTable = \REDCap::getData($pidsArray['HARMONIST'], 'array', ['record_id' => $concept_id]);
+                $concept = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetTable, $pidsArray['HARMONIST']);
+                $concept_sheet = arrayKeyExistsReturnValue($concept, [0, 'concept_id']);
+                $concept_title = arrayKeyExistsReturnValue($concept, [0, 'concept_title']);
+
+                $RecordSetSOP = \REDCap::getData($pidsArray['SOP'], 'array', ['record_id' => $sop_id]);
+                $sop = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetSOP, $pidsArray['SOP']);
+                $array_userid = explode(',', arrayKeyExistsReturnValue($sop, [0, 'sop_downloaders']));
+
+                $person_info = \REDCap::getData([
+                                                    'project_id' => $pidsArray['PEOPLE'],
+                                                    'return_format' => 'json-array',
+                                                    'records' => arrayKeyExistsReturnValue($sop, [0, 'sop_datacontact']),
+                                                    'fields' => ['firstname', 'lastname', 'email']
+                                                ]);
+                if (!empty($person_info)) {
+                    $contact_concept_person = arrayKeyExistsReturnValue($person_info, [0, 'firstname']) . " " . arrayKeyExistsReturnValue($person_info, [0, 'lastname']) . " (<a href='mailto:" . arrayKeyExistsReturnValue($person_info, [0, 'email']) . "'>" . arrayKeyExistsReturnValue($person_info, [0, 'email']) . "</a>)";
+                } else {
+                    $contact_concept_person = "<i>None</i>";
+                }
+
+                $concept_header = $concept_sheet . ' | Data Request #' . $sop_id;
+
+                $array_dates = $module->escape(getNumberOfDaysLeftButtonHTML(arrayKeyExistsReturnValue($sop, [0, 'sop_due_d']), '', '', '1', '1'));
+
+                $downloads_active = 0;
+                $body = '';
+                $permission_granted = false;
+                foreach ($AllDataUp as $data_up) {
+                    if ($data_up['data_upload_person'] == $currentUser['record_id'] || ($key = array_search($currentUser['record_id'], $array_userid)) !== false) {
+                        $permission_granted = true;
+                        $data_printed = true;
+                        $assoc_concept = getReqAssocConceptLink($module, $pidsArray, $data_up['data_assoc_concept']);
+
+                        $assocRequestData = \REDCap::getData($pidsArray['RMANAGER'], 'json-array', ['request_id' => $data_up['data_assoc_request']], ['request_title']);
+                        $assoc_request = arrayKeyExistsReturnValue($assocRequestData, [0, 'request_title']);
+
+                        $person_info = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', ['record_id' => $data_up['data_upload_person']], ['firstname', 'lastname', 'email'])[0];
+                        $contact_person = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info['firstname'] . " " . $person_info['lastname'] . "</a>";
+
+                        $RecordSetRegion = $module->escape(\REDCap::getData($pidsArray['REGIONS'], 'array', ['record_id' => $data_up['data_upload_region']]));
+                        $region_code = ProjectData::getProjectInfoArrayRepeatingInstruments($RecordSetRegion, $pidsArray['REGIONS'])[0]['region_code'];
+
+                        $file_pdf = ($data_up['data_upload_pdf'] == "") ? "" : getFileLink($module, $pidsArray['PROJECTS'], $data_up['data_upload_pdf'], '1', '', $secret_key, $secret_iv, $currentUser['record_id'], "");
+
+                        $extra_days = ' + ' . $settings['retrievedata_expiration'] . " days";
+                        $expire_date = date('Y-m-d', strtotime($data_up['responsecomplete_ts'] . $extra_days));
+
+                        $array_expire_dates = getNumberOfDaysLeftButtonHTML($expire_date, '', '', '2');
+                        $expiration_date = $array_expire_dates['text'] . " " . $array_expire_dates['button'];
+
+                        $deleted = "";
+                        $buttons = "";
+                        if ($data_up['deleted_y'] != '1' && strtotime($expire_date) >= strtotime(date('Y-m-d'))) {
+                            $downloads_active++;
+                            $downloadUrl = $module->getUrl('hub/aws/AWS_downloadFile.php') . '&codeData=' . getCrypt("id=" . $data_up['record_id'] . "&user_id=" . $hubData->getCurrentUser()['record_id'], 'e', $secret_key, $secret_iv);
+                            $buttons = '<div><a href="' . $downloadUrl . '" class="btn btn-primary btn-sm"><i class="fa fa-arrow-down"></i> Download</a></div>';
+                        } else if ($data_up['deleted_y'] == '1' && $data_up['deletion_ts'] != "") {
+                            if ($data_up['deletion_type'] == '2') {
+                                $person_info_delete = \REDCap::getData($pidsArray['PEOPLE'], 'json-array', ['record_id' => $data_up['deletion_hubuser']], ['firstname', 'lastname', 'email'])[0];
+                                $contact_person_delete = "<a href='mailto:" . $person_info['email'] . "'>" . $person_info_delete['firstname'] . " " . $person_info_delete['lastname'] . "</a>";
+
+                                $deleted = '<div><i>File deleted by ' . $contact_person_delete . ' on ' . htmlspecialchars($data_up['deletion_ts'], ENT_QUOTES) . '</i></div>';
+                                $expiration_date = "<span class='text-danger'>" . htmlspecialchars(date("d M Y", strtotime($data_up['deletion_ts'])), ENT_QUOTES) . "</span>";
+                            } else {
+                                $expiration_date = "<span class='text-danger'>" . htmlspecialchars(date("d M Y", strtotime($data_up['deletion_ts'])), ENT_QUOTES) . "</span>";
+                                $deleted = '<div><i>File auto-deleted on ' . htmlspecialchars($data_up['deletion_ts'], ENT_QUOTES) . '</i></div>';
+                            }
+                        } else if (strtotime($expire_date) >= strtotime(date('Y-m-d'))) {
+
+                        }
+
+                        $notes = $data_up['upload_notes'] ?: "<i>No notes available</i>";
+
+                        // Main row
+                        $body .= "<tr>
+                                <td class='dtr-control' style='cursor: pointer;' onclick='toggleRowContent(this)'>
+                                    <button class='btn btn-link text-decoration-none'><i class='fa fa-plus'></i></button>
+                                    <span>" . htmlspecialchars($data_up['responsecomplete_ts'], ENT_QUOTES) . "</span>
+                                </td>
+                                <td>" . htmlspecialchars($region_code, ENT_QUOTES) . "</td>
+                                <td>" . filter_tags($contact_person) . "</td>
+                                <td>" . htmlspecialchars($data_up['data_upload_zip'], ENT_QUOTES) . filter_tags($deleted) . "</td>
+                                <td class='text-center'>" . filter_tags($file_pdf) . "</td>
+                                <td>" . filter_tags($expiration_date) . "</td>
+                                <td>" . filter_tags($buttons) . "</td>
+                            </tr>";
+
+                        // Hidden row for notes
+                        $body .= "<tr class='dtr-hidden d-none'>
+                                <td colspan='7' class='ps-3'>" . filter_tags($notes) . "</td>
+                            </tr>";
+                    }
+                }
+
+                $downloadsNumberClasses = "bg-info text-dark";
+                if($downloads_active > 0){
+                    $downloadsNumberClasses = "bg-primary text-light";
+                }
+
+                $header = '
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title d-flex justify-content-between align-items-center">
+                        <!-- Title on the left -->
+                        <a class="collapseText d-flex align-items-center toggle-icon w-100" 
+                           data-bs-toggle="collapse" 
+                           href="#collapse_concept_' . htmlspecialchars($concept_id . $sop_id, ENT_QUOTES) . '" 
+                           role="button" 
+                           aria-expanded="true" 
+                           aria-controls="collapse_concept_' . htmlspecialchars($concept_id . $sop_id, ENT_QUOTES) . '">
+                            <span>' . htmlspecialchars($concept_header, ENT_QUOTES) . '</span>
+                        </a>
+                    
+                        <!-- Badges and chevron on the right -->
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">' . filter_tags($array_dates['button'], ENT_QUOTES) . '</span>
+                            <span class="badge '.$downloadsNumberClasses.' me-3" style="font-weight: normal;">
+                                <i class="fa fa-arrow-down"></i> ' . htmlspecialchars($downloads_active, ENT_QUOTES) . '
+                            </span>
+                            <a class="collapseText d-flex align-items-center toggle-icon w-100" 
+                               data-bs-toggle="collapse" 
+                               href="#collapse_concept_' . htmlspecialchars($concept_id . $sop_id, ENT_QUOTES) . '" 
+                               role="button" 
+                               aria-expanded="true" 
+                               aria-controls="collapse_concept_' . htmlspecialchars($concept_id . $sop_id, ENT_QUOTES) . '">
+                            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </h6>
+                </div>
+                
+                <div id="collapse_concept_' . htmlspecialchars($concept_id . $sop_id, ENT_QUOTES) . '" class="collapse table-no-borders">
+                    <table class="table table_requests sortable-theme-bootstrap">
+                        <div class="row request">
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Title: </strong><a href="'.$indexUrl.'&NOAUTH&pid=' . $pidsArray['PROJECTS'] . '&option=ttl&record=' . htmlspecialchars($concept_id,ENT_QUOTES) . '" target="_blank" alt="concept_link" style="color: #337ab7;">' . htmlspecialchars($concept_title,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a> | <a href="'.$indexUrl.'&option=sop&record=' . $sop_id . '&type=r'.'" target="_blank" alt="concept_link" style="color: #337ab7;">Data Request #' . htmlspecialchars($sop_id,ENT_QUOTES) . ' <i class="fa fa-external-link"></i></a></div>
+                        </div>
+                        <div class="row request">
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Contact: </strong>' . filter_tags($contact_concept_person) . '</div>
+                        </div>
+                        <div class="row request">
+                            <div class="col-md-12 col-sm-12" style="padding-left: 30px"><strong>Data Due: ' . filter_tags($array_dates['text']) . '</strong></div>
+                        </div>
+                        <div class="row request"></div>
+                    </table>
+                    <div class="table-no-borders">
+                    <div class="table-responsive">
+                    <table class="table" data-sortable id="sortable_table_downloads">
+                        <thead>
+                        <tr>
+                            <th class="sorted_class sorting_desc ps-3" width="160px" data-sorted="true" aria-sort="descending" data-sorted-direction="descending">Upload Date</th>
+                            <th class="sorted_class" style="width:30px">Region</th>
+                            <th class="sorted_class" style="width:150px">Submitted By</th>
+                            <th class="sorted_class" style="width:250px">Filename</th>
+                            <th class="sorted_class" style="width:80px">PDF</th>
+                            <th class="sorted_class" style="width:180px">Available Until</th>
+                            <th class="sorting_disabled" style="width:96px" data-sortable="false">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>';
+
+                $header .= $body;
+                $header .= '</tbody></table></div></div></div></div>';
+
+                if ($permission_granted) {
+                    echo $header;
+                }
+            }
+        }
+        if (!$data_printed) {
+            echo '<div><div><table>
+            <tbody>
+            <tr>
+                <td class="ps-3"><span><i>You are not an assigned Data Downloader on any current datasets.</i></span></td>
+            </tr></tbody></table></div></div>';
+        }
+    }
+    ?>
+</div>
+<?php
+if($settings['session_timeout_popup'] == 2 && $settings['session_timeout_popup'] != ''){
+    echo REDCapManagement::renderLogoutModal($module, $settings, 'logout_modal.html.twig');
+}
+?>
+
