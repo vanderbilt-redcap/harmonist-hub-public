@@ -17,13 +17,9 @@ $eventId = (int)$Proj->firstEventId;
     true
 );
 
-// $htmlPdf is already sanitized inside preparePdfHtml() via HTMLPurifier (see DataRequestBuilder::purifyHTML()).
-// Explicitly clear taint at the output sink so Psalm doesn't re-flag the already-purified markup.
-/**
- * @psalm-taint-escape html
- * @psalm-taint-escape has_quotes
- * @var string $cleanHtmlPdf
- */
+// $htmlPdf is already assembled and purified inside preparePdfHtml() via HTMLPurifier
+// (see DataRequestBuilder::purifyHTML()). Re-purify at the output sink so Psalm sees a
+// recognized sanitizer instead of a suppressed taint.
 $cleanHtmlPdf = (string)$htmlPdf;
 
 $htmlPrint = <<<HTML
