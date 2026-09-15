@@ -17,6 +17,10 @@ $pid = (int)$_GET['pid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<div style="padding:12px 16px;" class="alert alert-danger">
+    <strong>⚠️ This is the Harmonist Hub Public version for portability testing and not for final release.<br/>⚠️ Do not use this external module for a live consortium installation</strong>
+</div>
+
 <?php
 if(($hub_projectname == '' || $hub_profile == '') || (array_key_exists('message',$_REQUEST) && $_REQUEST['message']=='D')){ ?>
 <head>
