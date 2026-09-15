@@ -378,8 +378,6 @@ class DataRequestBuilder extends Model
 
     /**
      * @return array{0: string, 1: string, 2?: string}
-     * @psalm-taint-escape html
-     * @psalm-taint-escape has_quotes
      */
     public function preparePdfHtml(HarmonistHubExternalModule $module, int $record, int $eventId, array $settings, bool $zipFile = false, bool $preview = false): array
     {
@@ -538,12 +536,12 @@ class DataRequestBuilder extends Model
         }
 
         $out = "<tr><td align='center'>";
-        $out .= $this->sectionTitleBlock(($settings['hub_name_long'] ?? '') . " (" . ($settings['hub_name'] ?? '') . ")", 16, 'hub_name');
-        $out .= $this->sectionTitleBlock("DATA TRANSFER REQUEST – ".($data['sop_concept_id'] ?? ''),  16, 'sop_data_transfer_request');
+        $out .= $this->sectionTitleBlock(($settings['hub_name_long'] ?? '') . " (" . ($settings['hub_name'] ?? '') . ")", 'hub_name', 16);
+        $out .= $this->sectionTitleBlock("DATA TRANSFER REQUEST – ".($data['sop_concept_id'] ?? ''), 'sop_data_transfer_request', 16);
         $out .= "<br/><br/>";
-        $out .= $this->sectionTitleBlock(($data['sop_concept_title'] ?? ''), 16, 'sop_concept_title');
+        $out .= $this->sectionTitleBlock(($data['sop_concept_title'] ?? ''), 'sop_concept_title', 16);
         $out .= "<br/><br/>";
-        $out .= $this->sectionTitleBlock("<span style='color:#449d44'>Data Due: ".$sop_due_d."</span>", 14, 'sop_due_d_preview');
+        $out .= $this->sectionTitleBlock("<span style='color:#449d44'>Data Due: ".$sop_due_d."</span>", 'sop_due_d_preview', 14);
         $out .= "<br/>";
         if(!$preview && ($data['sop_creator_name'] == '' && $data['sop_creator2'] == '')) {
             //If we don't have contacts, don't add them to the PDF
@@ -644,7 +642,7 @@ class DataRequestBuilder extends Model
         return $out;
     }
 
-    public function sectionTitleBlock(string $data, int $fontSize = 12, string $id): string
+    public function sectionTitleBlock(string $data, int $id, string $fontSize): string
     {
         $out = "";
 

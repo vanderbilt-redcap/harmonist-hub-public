@@ -264,15 +264,12 @@ class SecurityHandler
         }
 
         // At this point $token is validated via isTokenCorrect() — safe to use
-        /** @psalm-taint-escape cookie */
-        $validatedToken = $token;
-
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $validatedToken;
+        $_SESSION[self::SESSION_TOKEN_STRING][$this->tokenSessionName] = $token;
 
-        return $validatedToken;
+        return $token;
     }
 
     public static function generateHexKey(): string
@@ -424,14 +421,11 @@ class SecurityHandler
 
         $tokenSessionName = $this->cookieKey($this->tokenSessionName);
 
-        // Token is validated — mark as safe for Psalm taint analysis
-        /** @psalm-taint-escape cookie */
-        $safeToken = $token;
-
+        // Token is validated
         // We set cookies as REDCap deletes Session data on redcap_survey_acknowledgement_page
         $sessionData = [
             self::SESSION_TOKEN_STRING => [
-                $tokenSessionName => $safeToken
+                $tokenSessionName => $token
             ]
         ];
 
