@@ -50,6 +50,7 @@ if($instrument == 'request'){
                 (is_array($dashboardVotingStatus) && $dashboardVotingStatusInstance == null)
                 || (is_array($dashboardVotingStatusInstance) && $dashboardVotingStatusRespondingRegion == null)
                 || empty($dashboardVotingStatusRespondingRegion)
+                || empty($dashboardVotingStatus)
             )
         ) {
             $array_repeat_instances = array();

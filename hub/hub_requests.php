@@ -13,9 +13,6 @@ if($RequestType != ''){
     $link_all_requests = '<a href="'.$module->getUrl('index.php').'&NOAUTH&option=hub'.'">View All Requests</a> | ';
 }
 
-$requestData = \REDCap::getData($pidsArray['RMANAGER'], 'array', array('request_id' => 1),null,null,false,false,false,true);
-print_array($requestData);
-
 $requests = $hubData->getAllRequests();
 
 $commentDetails = $hubData->getCommentDetails();
