@@ -1,6 +1,6 @@
 <?php
 
-namespace Vanderbilt\HarmonHarmonistHubPublicExternalModuleistHubExternalModule;
+namespace Vanderbilt\HarmonistHubPublicExternalModule;
 
 use Project;
 use REDCap;
