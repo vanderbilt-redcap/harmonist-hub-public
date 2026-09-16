@@ -465,12 +465,12 @@ class Concept extends Model
 
     public function setWg4Link($wg4Link): string
     {
-        $this->wgLink = $wg4Link;
+        $this->wg4Link = $wg4Link;
     }
 
     public function getWg4Link(): string
     {
-        return $this->wgLink;
+        return $this->wg4Link;
     }
 
     public function getRevisedY(): string
