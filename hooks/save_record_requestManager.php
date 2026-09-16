@@ -43,22 +43,15 @@ if($instrument == 'request'){
         $dashboardVotingStatus = arrayKeyExistsReturnValue($requestData,[$record,'repeat_instances',$event_id,'dashboard_voting_status']);
         $dashboardVotingStatusInstance = arrayKeyExistsReturnValue($dashboardVotingStatus,[$instance]);
         $dashboardVotingStatusRespondingRegion = arrayKeyExistsReturnValue($dashboardVotingStatusInstance,['responding_region']);
-        //only if it's the first time we save the info
-        if($region['voteregion_y'] == '1' &&
+
+        // only voting regions, and only the first time we save the info
+        if ($region['voteregion_y'] == '1' &&
             (
-                is_array($dashboardVotingStatus)
-                &&
-                $dashboardVotingStatusInstance ==  null
+                (is_array($dashboardVotingStatus) && $dashboardVotingStatusInstance == null)
+                || (is_array($dashboardVotingStatusInstance) && $dashboardVotingStatusRespondingRegion == null)
+                || empty($dashboardVotingStatusRespondingRegion)
             )
-            ||
-            (
-                is_array($dashboardVotingStatusInstance)
-                &&
-                $dashboardVotingStatusRespondingRegion ==  null
-            )
-            ||
-            empty($dashboardVotingStatusRespondingRegion))
-        {
+        ) {
             $array_repeat_instances = array();
             $aux = array();
             $aux['region_response_status'] = '0';
@@ -68,8 +61,6 @@ if($instrument == 'request'){
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
             \REDCap::logEvent("Create Research Group Instance\nRequest Manager", $region['region_name']." (".$region['region_code'].")", null, $record, $event_id, $project_id);
-        }else{
-            break;
         }
     }
     $jsonRM = json_encode($arrayRM);
