@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubPublicExternalModule;
 include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
-error_log("IEDEA - here 0");
+
 #Get Projects ID's
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
@@ -12,7 +12,6 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 if($instrument == 'request'){
-    error_log("IEDEA - here 1");
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
     $completion_time = ProjectData::getCompletionTime($data[$instrument.'_complete'], $data[$instrument . '_timestamp']);
@@ -44,16 +43,22 @@ if($instrument == 'request'){
         $dashboardVotingStatus = arrayKeyExistsReturnValue($requestData,[$record,'repeat_instances',$event_id,'dashboard_voting_status']);
         $dashboardVotingStatusInstance = arrayKeyExistsReturnValue($dashboardVotingStatus,[$instance]);
         $dashboardVotingStatusRespondingRegion = arrayKeyExistsReturnValue($dashboardVotingStatusInstance,['responding_region']);
-
-        // only voting regions, and only the first time we save the info
-        if ($region['voteregion_y'] == '1' &&
+        //only if it's the first time we save the info
+        if($region['voteregion_y'] == '1' &&
             (
-                (is_array($dashboardVotingStatus) && $dashboardVotingStatusInstance == null)
-                || (is_array($dashboardVotingStatusInstance) && $dashboardVotingStatusRespondingRegion == null)
-                || empty($dashboardVotingStatusRespondingRegion)
-                || empty($dashboardVotingStatus)
+                is_array($dashboardVotingStatus)
+                &&
+                $dashboardVotingStatusInstance ==  null
             )
-        ) {
+            ||
+            (
+                is_array($dashboardVotingStatusInstance)
+                &&
+                $dashboardVotingStatusRespondingRegion ==  null
+            )
+            ||
+            empty($dashboardVotingStatusRespondingRegion))
+        {
             $array_repeat_instances = array();
             $aux = array();
             $aux['region_response_status'] = '0';
@@ -63,6 +68,8 @@ if($instrument == 'request'){
             $array_repeat_instances[$record]['repeat_instances'][$event_id]['dashboard_voting_status'][$instance] = $aux;
             $results = \REDCap::saveData($project_id, 'array', $array_repeat_instances,'overwrite', 'YMD', 'flat', '', true, true, true, false, true, array(), true, false, 1, false, '');
             \REDCap::logEvent("Create Research Group Instance\nRequest Manager", $region['region_name']." (".$region['region_code'].")", null, $record, $event_id, $project_id);
+        }else{
+            break;
         }
     }
     $jsonRM = json_encode($arrayRM);
