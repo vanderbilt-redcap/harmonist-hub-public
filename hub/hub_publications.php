@@ -332,7 +332,7 @@ $pubtext5 = empty($settings['pubtext5']) ? "Multi" : $settings['pubtext5'];
         </div>
     </div>
 
-    <div class="optionSelect conceptSheets_optionMenu" style="overflow: hidden;">
+    <div class="optionSelect conceptSheets_optionMenu" style="overflow: visible;">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
             <!-- Left Section: DataTable buttons & search -->
             <div id="options_wrapper" class="d-flex flex-wrap align-items-center gap-2"></div>
