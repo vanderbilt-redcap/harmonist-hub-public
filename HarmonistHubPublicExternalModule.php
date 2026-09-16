@@ -169,6 +169,7 @@ class HarmonistHubPublicExternalModule extends AbstractExternalModule
 
     function redcap_save_record($project_id, $record, $instrument, $event_id)
     {
+        error_log("IEDEA - redcap_save_record");
         #Get Projects ID's
         $hub_mapper = $this->getProjectSetting('hub-mapper',$project_id);
         $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
@@ -177,6 +178,7 @@ class HarmonistHubPublicExternalModule extends AbstractExternalModule
             if ($project_id == $pidsArray['SOP']) {
                 include_once("hooks/save_record_SOP.php");
             } else if ($project_id == $pidsArray['RMANAGER']) {
+                error_log("IEDEA - redcap_save_record RMANAGER");
                 include_once("hooks/save_record_requestManager.php");
             } else if ($project_id == $pidsArray['COMMENTSVOTES']) {
                 include_once("hooks/save_record_commentsAndVotes.php");

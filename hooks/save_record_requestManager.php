@@ -3,7 +3,7 @@ namespace Vanderbilt\HarmonistHubPublicExternalModule;
 include_once(__DIR__ ."/../projects.php");
 include_once(__DIR__ ."/../functions.php");
 use ExternalModules\ExternalModules;
-\Safe\error_log("IEDEA - here 0");
+error_log("IEDEA - here 0");
 #Get Projects ID's
 $hub_mapper = $this->getProjectSetting('hub-mapper');
 $pidsArray = REDCapManagement::getPIDsArray($hub_mapper);
@@ -12,7 +12,7 @@ $requestData = \REDCap::getData($project_id, 'array', array('request_id' => $rec
 $request = $requestData[$record][$event_id];
 
 if($instrument == 'request'){
-    \Safe\error_log("IEDEA - here 1");
+    error_log("IEDEA - here 1");
     $data = \REDCap::getData($project_id, 'json-array',$record,array($instrument.'_complete',$instrument.'_timestamp'), null,false,false,false,true)[0];
 
     $completion_time = ProjectData::getCompletionTime($data[$instrument.'_complete'], $data[$instrument . '_timestamp']);
