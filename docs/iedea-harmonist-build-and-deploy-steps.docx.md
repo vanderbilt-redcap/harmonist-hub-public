@@ -61,8 +61,9 @@ If this is the first time activating the module, after configuring it, you need 
 
 ![Harmonist's first-time installation notice](/docs/images/image5.png)
 
-3. Click the button to install the projects, and you are ready to start adding data to them.
-4. It is recommended to start with the "Settings" project.
+3. Click the button to install the projects.
+4. Before adding data, please go to the **Hub Updates** link to ensure all project are updated.
+5. It is recommended to start with the "Settings" project.
 
 ## 4. Copying Data
 
