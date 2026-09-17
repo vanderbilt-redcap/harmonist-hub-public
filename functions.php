@@ -481,7 +481,12 @@ function showOpenRequest($req,$instance){
  * @return bool
  */
 function showClosedRequest($settings,$req,$instance){
-    if (((arrayKeyExists($req, 'region_response_status', $instance) && $req['region_response_status'][$instance] == "2") || $req['finalize_y'] != "") && !empty($req['due_d'])) {
+    $finalized = array_key_exists('finalize_y', $req) && $req['finalize_y'] != "";
+    $response_completed = arrayKeyExists($req, 'region_response_status', $instance)
+        && is_array($req['region_response_status'])
+        && $req['region_response_status'][$instance] == "2";
+
+    if (($response_completed || $finalized) && !empty($req['due_d'])) {
         $extra_days = ' + ' . $settings['pastrequest_dur'] . " days";
         $due_date_time = date('Y-m-d', strtotime($req['due_d'] . $extra_days));
         $today = date('Y-m-d');

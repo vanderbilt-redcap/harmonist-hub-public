@@ -1,6 +1,6 @@
 <?php
 
-namespace Vanderbilt\v;
+namespace Vanderbilt\HarmonistHubPublicExternalModule;
 
 use REDCap;
 

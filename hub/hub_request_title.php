@@ -28,7 +28,8 @@ if($request !="") {
         $wg_name = \REDCap::getData($pidsArray['GROUP'], 'json-array', array('record_id' => $request['wg2_name']),array('group_name'))[0]['group_name'];
     }
 
-    $array_dates = getNumberOfDaysLeftButtonHTML($request['due_d'], $request['region_response_status'][$currentUser['person_region']], '', '1');
+    $responseStatus = arrayKeyExistsReturnValue($request, ['region_response_status', $currentUser['person_region']]);
+    $array_dates = getNumberOfDaysLeftButtonHTML($request['due_d'], $responseStatus, '', '1');
 
     $conference_info = "";
     if (!empty($request_type_label[$request['request_type']]) && ($request_type_label[$request['request_type']] == 'Other' || $request_type_label[$request['request_type']] == 'Abstract' || $request_type_label[$request['request_type']] == 'Poster')) {
@@ -316,7 +317,12 @@ if($request !="") {
         </div>
         <div class="row request">
             <div class="col-md-8 col-sm-12"><strong>Concept:</strong> <?=$concept;?></div>
-            <div class="col-md-4 d-none d-sm-block"><strong>Review: </strong><span class="<?=$region_review_icon_text[$request['region_response_status'][$currentUser['person_region']]]?>"><?=$region_response_status[$request['region_response_status'][$currentUser['person_region']]]?> <i class="<?=$region_review_icon[$request['region_response_status'][$currentUser['person_region']]]?>" aria-hidden="true"></i></span></div>
+            <div class="col-md-4 d-none d-sm-block"><strong>Review: </strong>
+                <?php $rrs = arrayKeyExistsReturnValue($request, ['region_response_status', $currentUser['person_region']]); ?>
+                <span class="<?=arrayKeyExistsReturnValue($region_review_icon_text, [$rrs])?>">
+                <?=arrayKeyExistsReturnValue($region_response_status, [$rrs])?>
+                <i class="<?=arrayKeyExistsReturnValue($region_review_icon, [$rrs])?>" aria-hidden="true"></i>
+            </span></div>
         </div>
         <div class="row request">
             <div class="col-md-8 col-sm-12"><strong>Working Group:</strong> <?=$wg_name;?></div>

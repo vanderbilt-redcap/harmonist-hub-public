@@ -137,7 +137,9 @@ echo '  <div class="container mt-2">
                                     <div class="alert alert-warning row">
                                         <div class="col-10"><span class="float-start">
                                             The data dictionary for <strong>' . \REDCap::getProjectTitle() . '</strong> is empty.
-                                            <br/>Click the button to create the data dictionary and all related projects.</span>
+                                            <br/>Click the button to create the data dictionary and all related projects.
+                                            <br/>Please visit <a href="'.$module->getUrl("hub-updates/index.php") .'" target="_blank">Hub Updates</a> on the External Modules section after installation.
+                                            </span>
                                         </div>
                                         <div class="col-2"><button id="installbtn"' . $installDisabled . ' ' . $onClickAttr . ' class="btn btn-primary float-end"><span id="save_continue_4_spinner"></span> Create Projects & Data Dictionary</button></div>
                                     </div>
