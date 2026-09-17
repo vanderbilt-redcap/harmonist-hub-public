@@ -467,7 +467,7 @@ class HarmonistHubPublicExternalModule extends AbstractExternalModule
 
         if (($handle = fopen($csvFilePath, "rb")) !== false) {
             // Loop through each row
-            while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+            while (($row = fgetcsv($handle, 0, $delimiter, escape: "")) !== false) {
                 // Skip row 1
                 if ($i == 1) {
                     ## CHECK DELIMITER
