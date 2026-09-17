@@ -33,9 +33,9 @@ class ArrayFunctions
     public static function csvToArray($csvFile) {
         $data = [];
         if (($handle = fopen($csvFile, 'r')) !== false) {
-            $headers = fgetcsv($handle);
+            $headers = fgetcsv(stream: $handle, escape: "\\");
 
-            while (($row = fgetcsv($handle)) !== false) {
+            while (($row = fgetcsv(stream: $handle, escape: "\\")) !== false) {
                 $data[] = array_combine($headers, $row);
             }
             fclose($handle);
