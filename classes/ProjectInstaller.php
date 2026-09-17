@@ -52,7 +52,7 @@ class ProjectInstaller
             $this->addRepeatableInstrument($index, $projectIdNew);
 
             // Enable external modules and hooks
-            $this->enableHooksAndModules($index, $projectIdNew);
+            $this->enableHooksAndModules($index, $projectIdNew, $this->projectId);
 
             // Add user permissions
             $this->addUserPermissions($projectIdNew);
@@ -299,7 +299,7 @@ class ProjectInstaller
     /**
      * Enable hooks and external modules.
      */
-    private function enableHooksAndModules($index, $projectIdNew)
+    private function enableHooksAndModules($index, $projectIdNew, $pid)
     {
         // Retrieve hooks and modules data using arrayKeyExistsReturnValue
         $hooksData = arrayKeyExistsReturnValue(REDCapProjectData::getHooks(), [$index]);
@@ -310,6 +310,7 @@ class ProjectInstaller
         if ($hooksData == '1') {
             $this->enableModuleIfRequired($projectIdNew, "harmonist-hub-public", true);
             $this->module->enableModule($projectIdNew, "harmonist-hub-public");
+            $this->module->setProjectSetting('hub-mapper', $pid, $projectIdNew);
         }
 
         // Enable "vanderbilt_emailTrigger" module if emailAlertsData exists
