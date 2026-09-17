@@ -33,7 +33,7 @@ function parseCSVtoArray($module, $DocID){
 function createArrayFromCSV($filepath,$filename, $addHeader = false){
     $file = $filepath.$filename;
     $csv = array_map(
-        fn($line) => str_getcsv($line, escape: ""),
+        fn($line) => str_getcsv($line, escape: "\\"),
         file($file)
     );
     #Remove hidden characters in file
